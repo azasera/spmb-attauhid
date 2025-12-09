@@ -236,7 +236,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </div>
 
           {/* Gender Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-5 rounded-2xl shadow-lg hover-lift transform transition-all">
               <div className="text-white/90 text-sm font-semibold mb-1 flex items-center gap-2">
                 <span>👨</span> Laki-laki
@@ -278,6 +278,95 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Asrama Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+            <div className="bg-gradient-to-br from-violet-500 to-purple-600 p-5 rounded-2xl shadow-lg hover-lift transform transition-all">
+              <div className="text-white/90 text-sm font-semibold mb-1 flex items-center gap-2">
+                <span>🏠</span> Asrama
+              </div>
+              <div className="text-3xl font-black text-white">
+                {filteredStudents.filter(s => s.data.asrama === 'ASRAMA').length}
+              </div>
+              <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
+                <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.data.asrama === 'ASRAMA').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
+              </div>
+            </div>
+            <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-5 rounded-2xl shadow-lg hover-lift transform transition-all">
+              <div className="text-white/90 text-sm font-semibold mb-1 flex items-center gap-2">
+                <span>🏡</span> Non Asrama
+              </div>
+              <div className="text-3xl font-black text-white">
+                {filteredStudents.filter(s => s.data.asrama === 'NON ASRAMA').length}
+              </div>
+              <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
+                <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.data.asrama === 'NON ASRAMA').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
+              </div>
+            </div>
+            <div className="bg-gradient-to-br from-yellow-500 to-amber-600 p-5 rounded-2xl shadow-lg hover-lift transform transition-all">
+              <div className="text-white/90 text-sm font-semibold mb-1 flex items-center gap-2">
+                <span>⚠️</span> Cadangan
+              </div>
+              <div className="text-3xl font-black text-white">
+                {filteredStudents.filter(s => s.kelulusan === 'CADANGAN').length}
+              </div>
+              <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
+                <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.kelulusan === 'CADANGAN').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Penguji Stats */}
+          {(() => {
+            // Hitung statistik per penguji
+            const pengujiStats = filteredStudents
+              .filter(s => s.status === 'SUDAH DIUJI' && s.penguji)
+              .reduce((acc, student) => {
+                const penguji = student.penguji || 'Tidak Diketahui';
+                if (!acc[penguji]) {
+                  acc[penguji] = 0;
+                }
+                acc[penguji]++;
+                return acc;
+              }, {} as Record<string, number>);
+
+            const pengujiList = Object.entries(pengujiStats).sort((a, b) => b[1] - a[1]);
+
+            if (pengujiList.length === 0) return null;
+
+            const colors = [
+              'from-indigo-500 to-blue-600',
+              'from-teal-500 to-cyan-600',
+              'from-fuchsia-500 to-pink-600',
+              'from-lime-500 to-green-600',
+              'from-rose-500 to-red-600',
+              'from-sky-500 to-blue-600',
+            ];
+
+            return (
+              <div className="mb-4">
+                <h3 className="text-lg font-bold text-white mb-3 drop-shadow-lg">📊 Statistik Per Penguji</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {pengujiList.map(([penguji, count], index) => (
+                    <div key={penguji} className={`bg-gradient-to-br ${colors[index % colors.length]} p-5 rounded-2xl shadow-lg hover-lift transform transition-all`}>
+                      <div className="text-white/90 text-sm font-semibold mb-1 flex items-center gap-2">
+                        <span>👤</span> {penguji}
+                      </div>
+                      <div className="text-3xl font-black text-white">
+                        {count}
+                      </div>
+                      <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
+                        <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${(count / Math.max(filteredStudents.filter(s => s.status === 'SUDAH DIUJI').length, 1)) * 100}%` }}></div>
+                      </div>
+                      <div className="text-white/70 text-xs mt-1">
+                        {((count / Math.max(filteredStudents.filter(s => s.status === 'SUDAH DIUJI').length, 1)) * 100).toFixed(1)}% dari total
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Add Student Button (TU Only) */}
