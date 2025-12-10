@@ -72,15 +72,15 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 Username
               </label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400 group-focus-within:text-emerald-500 transition-colors" />
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                  <User className="h-5 w-5 text-amber-800 group-focus-within:text-amber-700 transition-colors" />
                 </div>
                 <input
                   id="username"
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="block w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-400 transition-all bg-white/50 backdrop-blur-sm"
+                  className="block w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-400 transition-all bg-white backdrop-blur-sm relative"
                   placeholder="Masukkan username"
                   disabled={isLoading}
                   autoComplete="username"
@@ -93,15 +93,15 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 Password
               </label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-emerald-500 transition-colors" />
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                  <Lock className="h-5 w-5 text-amber-800 group-focus-within:text-amber-700 transition-colors" />
                 </div>
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-400 transition-all bg-white/50 backdrop-blur-sm"
+                  className="block w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-400 transition-all bg-white backdrop-blur-sm relative"
                   placeholder="Masukkan password"
                   disabled={isLoading}
                   autoComplete="current-password"
@@ -109,13 +109,13 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center hover:scale-110 transition-transform"
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center hover:scale-110 transition-transform z-10"
                   disabled={isLoading}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-emerald-600 transition-colors" />
-                  ) : (
                     <Eye className="h-5 w-5 text-gray-400 hover:text-emerald-600 transition-colors" />
+                  ) : (
+                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-emerald-600 transition-colors" />
                   )}
                 </button>
               </div>
