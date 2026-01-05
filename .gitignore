@@ -31,3 +31,8 @@ dist-ssr
 
 # Vercel
 .vercel
+
+*.mjs
+*.cjs
+*.txt
+diagnose_data.js
