@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { LogOut, School, Calendar, FileText, Edit, Trash2, UserCheck, Eye, ClipboardList, Search, Settings, User as UserIcon, MessageCircle } from 'lucide-react';
+import { LogOut, School, Calendar, FileText, Edit, Trash2, UserCheck, Eye, ClipboardList, Search, Settings, User as UserIcon, MessageCircle, Upload } from 'lucide-react';
 import { UserRole, Student, LembagaData, User } from '../types';
 import { downloadKartuPeserta, sendViaWhatsApp } from '../utils/pdfGenerator';
 import { exportStudentToPDF } from '../utils/exportUtils';
 import { downloadSuratKeterangan } from '../utils/suratKeteranganGenerator';
 import { getTahunAjaranFromDatabase, updateStudentNoTesToCurrentYear } from '../utils/helpers';
 import ExportButtons from './ExportButtons';
+import ImportModal from './ImportModal';
 import { supabase } from '../lib/supabase';
 
 interface DashboardScreenProps {
@@ -49,6 +50,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 }) => {
   const [tahunAjaranFromDB, setTahunAjaranFromDB] = useState<string>('');
   const [isSyncing, setIsSyncing] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importLembaga, setImportLembaga] = useState<LembagaData | null>(null);
 
   // Load tahun ajaran dari database saat pertama kali
   useEffect(() => {
@@ -400,25 +403,57 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
         {/* Add Student Button (TU Only) */}
         {userRole === 'TU' && (
           <div className="mb-6 animate-fade-in">
-            <h2 className="text-xl font-bold text-white mb-4 drop-shadow-lg">Tambah Calon Siswa Baru</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-white drop-shadow-lg">Tambah Calon Siswa Baru</h2>
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {lembagaData.map((lembaga) => {
                 const Icon = lembaga.icon;
                 return (
-                  <button
-                    key={lembaga.id}
-                    onClick={() => onAddStudent(lembaga)}
-                    className="glass hover:scale-105 rounded-2xl p-5 transition-all transform hover:shadow-2xl group"
-                  >
-                    <div className={`inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br ${lembaga.color} rounded-xl mb-3 shadow-lg group-hover:scale-110 transition-transform`}>
+                  <div key={lembaga.id} className="glass rounded-2xl p-5 hover:shadow-2xl transition-all">
+                    <div className={`inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br ${lembaga.color} rounded-xl mb-3 shadow-lg`}>
                       <Icon className="w-6 h-6 text-white" />
                     </div>
-                    <div className="text-sm font-bold text-gray-800 group-hover:text-emerald-700 transition-colors">{lembaga.name}</div>
-                  </button>
+                    <div className="text-sm font-bold text-gray-800 mb-3">{lembaga.name}</div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => onAddStudent(lembaga)}
+                        className="flex-1 px-3 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-xl text-xs font-bold transition-all transform hover:scale-105"
+                      >
+                        ➕ Manual
+                      </button>
+                      <button
+                        onClick={() => {
+                          setImportLembaga(lembaga);
+                          setShowImportModal(true);
+                        }}
+                        className="flex-1 px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white rounded-xl text-xs font-bold transition-all transform hover:scale-105 flex items-center justify-center gap-1"
+                      >
+                        <Upload className="w-3 h-3" />
+                        Excel
+                      </button>
+                    </div>
+                  </div>
                 );
               })}
             </div>
           </div>
+        )}
+
+        {/* Import Modal */}
+        {importLembaga && (
+          <ImportModal
+            isOpen={showImportModal}
+            onClose={() => {
+              setShowImportModal(false);
+              setImportLembaga(null);
+            }}
+            selectedLembaga={importLembaga}
+            onImportComplete={() => {
+              // Reload page to show new data
+              window.location.reload();
+            }}
+          />
         )}
 
         {/* Filters */}

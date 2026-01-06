@@ -2,7 +2,7 @@ import { LucideIcon } from 'lucide-react';
 
 export type UserRole = 'TU' | 'PENGUJI' | 'ADMIN' | null;
 
-export type View = 'login' | 'dashboard' | 'form' | 'penilaian' | 'detail' | 'admin';
+export type View = 'login' | 'dashboard' | 'form' | 'penilaian' | 'detail' | 'admin' | 'backup';
 
 export type StudentStatus = 'BELUM DIUJI' | 'SUDAH DIUJI';
 export type KelulusanStatus = 'LULUS' | 'CADANGAN' | 'TIDAK LULUS';

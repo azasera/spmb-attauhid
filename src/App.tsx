@@ -8,8 +8,10 @@ import DashboardScreen from './components/DashboardScreen';
 import FormScreen from './components/FormScreen';
 import PenilaianScreen from './components/PenilaianScreen';
 import AdminScreen from './components/AdminScreen';
+import { BackupScreen } from './components/BackupScreen';
 import Toast from './components/Toast';
 import { View, Petugas } from './types';
+import { backupService } from './utils/backupService';
 
 const App = () => {
   const [view, setView] = useState<View>('login');
@@ -86,6 +88,21 @@ const App = () => {
   const handleOpenAdmin = () => {
     setView('admin');
   };
+
+  const handleOpenBackup = () => {
+    setView('backup');
+  };
+
+  // Initialize backup service
+  useEffect(() => {
+    if (isAuthenticated && currentUser) {
+      // Initialize backup service silently (don't show errors in console)
+      backupService.initialize().catch(() => {
+        // Silently fail - bucket will be created manually later
+        console.warn('⚠️ Backup service not initialized. Create "backups" bucket in Supabase Storage to enable auto backup.');
+      });
+    }
+  }, [isAuthenticated, currentUser]);
 
   // Auto-restore session setelah refresh
   useEffect(() => {
@@ -201,7 +218,21 @@ const App = () => {
           onDeleteUser={deleteUser}
           onResetPassword={resetPassword}
           onBack={() => setView('dashboard')}
+          onOpenBackup={handleOpenBackup}
           showToast={showToast}
+        />
+        {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
+      </>
+    );
+  }
+
+  // Backup Screen (Admin Only)
+  if (view === 'backup' && currentUser?.role === 'ADMIN') {
+    return (
+      <>
+        <BackupScreen 
+          currentUser={currentUser} 
+          onBack={() => setView('admin')} 
         />
         {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
       </>

@@ -13,7 +13,8 @@ import {
   UserCheck,
   FileText,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Database
 } from 'lucide-react';
 
 interface AdminScreenProps {
@@ -24,6 +25,7 @@ interface AdminScreenProps {
   onDeleteUser: (userId: string) => Promise<{ success: boolean; message: string }>;
   onResetPassword: (userId: string, newPassword: string) => Promise<{ success: boolean; message: string }>;
   onBack: () => void;
+  onOpenBackup: () => void;
   showToast: (message: string, type: 'success' | 'error') => void;
 }
 
@@ -42,6 +44,7 @@ const AdminScreen: React.FC<AdminScreenProps> = ({
   onDeleteUser,
   onResetPassword,
   onBack,
+  onOpenBackup,
   showToast
 }) => {
   // Rubric guide editor state
@@ -283,13 +286,22 @@ const AdminScreen: React.FC<AdminScreenProps> = ({
                 </div>
               </div>
             </div>
-            <button
-              onClick={handleOpenCreateModal}
-              className="flex items-center px-6 py-3 bg-gradient-to-r from-white to-purple-50 text-purple-700 rounded-xl hover:shadow-2xl transition-all transform hover:scale-105 font-bold"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Tambah User
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={onOpenBackup}
+                className="flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-2xl transition-all transform hover:scale-105 font-bold"
+              >
+                <Database className="w-5 h-5 mr-2" />
+                Backup Data
+              </button>
+              <button
+                onClick={handleOpenCreateModal}
+                className="flex items-center px-6 py-3 bg-gradient-to-r from-white to-purple-50 text-purple-700 rounded-xl hover:shadow-2xl transition-all transform hover:scale-105 font-bold"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Tambah User
+              </button>
+            </div>
           </div>
         </div>
       </div>
