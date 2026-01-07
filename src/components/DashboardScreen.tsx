@@ -17,6 +17,8 @@ interface DashboardScreenProps {
   filterLembaga: string;
   filterStatus: string;
   searchQuery: string;
+  filterDateFrom?: string;
+  filterDateTo?: string;
   filteredStudents: Student[];
   onLogout: () => void;
   onAddStudent: (lembaga: LembagaData) => void;
@@ -26,6 +28,8 @@ interface DashboardScreenProps {
   onFilterLembagaChange: (value: string) => void;
   onFilterStatusChange: (value: string) => void;
   onSearchQueryChange: (value: string) => void;
+  onFilterDateFromChange?: (value: string) => void;
+  onFilterDateToChange?: (value: string) => void;
   onOpenAdmin: () => void;
 }
 
@@ -37,6 +41,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
   filterLembaga,
   filterStatus,
   searchQuery,
+  filterDateFrom,
+  filterDateTo,
   filteredStudents,
   onLogout,
   onAddStudent,
@@ -46,6 +52,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
   onFilterLembagaChange,
   onFilterStatusChange,
   onSearchQueryChange,
+  onFilterDateFromChange,
+  onFilterDateToChange,
   onOpenAdmin
 }) => {
   const [tahunAjaranFromDB, setTahunAjaranFromDB] = useState<string>('');
@@ -498,6 +506,39 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 <option value="CADANGAN">🟠 Cadangan</option>
                 <option value="TIDAK LULUS">🔴 Tidak Lulus</option>
               </select>
+            </div>
+          </div>
+          
+          {/* Date Filter Row */}
+          <div className="flex flex-col md:flex-row gap-4 mt-4 pt-4 border-t-2 border-gray-200">
+            <div className="flex-1">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">📅 Filter Tanggal Upload (Dari)</label>
+              <input
+                type="date"
+                value={filterDateFrom || ''}
+                onChange={(e) => onFilterDateFromChange?.(e.target.value)}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-400 transition-all bg-white/50 backdrop-blur-sm font-medium"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">📅 Filter Tanggal Upload (Sampai)</label>
+              <input
+                type="date"
+                value={filterDateTo || ''}
+                onChange={(e) => onFilterDateToChange?.(e.target.value)}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-400 transition-all bg-white/50 backdrop-blur-sm font-medium"
+              />
+            </div>
+            <div className="flex items-end">
+              <button
+                onClick={() => {
+                  onFilterDateFromChange?.('');
+                  onFilterDateToChange?.('');
+                }}
+                className="px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl hover:shadow-xl transition-all transform hover:scale-105 font-semibold whitespace-nowrap"
+              >
+                🔄 Reset Tanggal
+              </button>
             </div>
           </div>
         </div>

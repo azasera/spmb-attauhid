@@ -41,10 +41,14 @@ const App = () => {
     filterLembaga,
     filterStatus,
     searchQuery,
+    filterDateFrom,
+    filterDateTo,
     toast,
     setFilterLembaga,
     setFilterStatus,
     setSearchQuery,
+    setFilterDateFrom,
+    setFilterDateTo,
     showToast,
     hideToast,
     handleLogin: handleRoleLogin,
@@ -140,7 +144,9 @@ const App = () => {
     registeredStudents,
     filterLembaga,
     filterStatus,
-    searchQuery
+    searchQuery,
+    filterDateFrom,
+    filterDateTo
   );
 
   // Show loading saat check session
@@ -199,6 +205,10 @@ const App = () => {
           onFilterLembagaChange={setFilterLembaga}
           onFilterStatusChange={setFilterStatus}
           onSearchQueryChange={setSearchQuery}
+          filterDateFrom={filterDateFrom}
+          filterDateTo={filterDateTo}
+          onFilterDateFromChange={setFilterDateFrom}
+          onFilterDateToChange={setFilterDateTo}
           onOpenAdmin={handleOpenAdmin}
         />
         {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}

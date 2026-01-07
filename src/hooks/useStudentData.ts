@@ -25,6 +25,8 @@ export const useStudentData = (currentUser: User | null = null) => {
   const [filterLembaga, setFilterLembaga] = useState<string>('ALL');
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [filterDateFrom, setFilterDateFrom] = useState<string>('');
+  const [filterDateTo, setFilterDateTo] = useState<string>('');
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -505,11 +507,15 @@ export const useStudentData = (currentUser: User | null = null) => {
     filterLembaga,
     filterStatus,
     searchQuery,
+    filterDateFrom,
+    filterDateTo,
     toast,
     isLoading,
     setFilterLembaga,
     setFilterStatus,
     setSearchQuery,
+    setFilterDateFrom,
+    setFilterDateTo,
     showToast,
     hideToast,
     handleLogin,

@@ -211,7 +211,9 @@ export const getFilteredStudents = (
   students: Student[],
   filterLembaga: string,
   filterStatus: string,
-  searchQuery: string
+  searchQuery: string,
+  filterDateFrom?: string,
+  filterDateTo?: string
 ): Student[] => {
   let filtered = students;
 
@@ -235,6 +237,23 @@ export const getFilteredStudents = (
       s.data.namaOrangTua.toLowerCase().includes(searchQuery.toLowerCase()) ||
       s.noTes.toLowerCase().includes(searchQuery.toLowerCase())
     );
+  }
+
+  // Filter by date range (createdAt)
+  if (filterDateFrom) {
+    filtered = filtered.filter(s => {
+      if (!s.createdAt) return false;
+      const createdDate = new Date(s.createdAt).toISOString().split('T')[0];
+      return createdDate >= filterDateFrom;
+    });
+  }
+
+  if (filterDateTo) {
+    filtered = filtered.filter(s => {
+      if (!s.createdAt) return false;
+      const createdDate = new Date(s.createdAt).toISOString().split('T')[0];
+      return createdDate <= filterDateTo;
+    });
   }
 
   // PENGUJI sekarang melihat semua siswa (sama seperti TU/Admin)
