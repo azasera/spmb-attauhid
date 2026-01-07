@@ -94,10 +94,9 @@ const parseStudentRow = (row: ImportRow, rowNumber: number): ParsedStudent => {
     errors.push('Status Alumni harus "Ya" atau "Tidak" (atau kosongkan)');
   }
 
-  const asrama = toString(row['Status Asrama']).toUpperCase();
-  if (asrama && !['ASRAMA', 'NON ASRAMA', 'NON-ASRAMA', ''].includes(asrama)) {
-    errors.push('Status Asrama harus "Asrama" atau "Non Asrama" (atau kosongkan)');
-  }
+  // Status Asrama - accept any format, normalizeAsrama will handle it
+  const asrama = toString(row['Status Asrama']);
+  // No validation needed - normalizeAsrama accepts: "ASRAMA", "NON ASRAMA", "SMA ( ASRAMA )", etc
 
   // Validate date format only if filled
   const tanggalLahir = toString(row['Tanggal Lahir']);
@@ -154,8 +153,34 @@ const normalizeAlumni = (value: string): 'YA' | 'TIDAK' => {
 };
 
 const normalizeAsrama = (value: string): 'ASRAMA' | 'NON ASRAMA' => {
-  const upper = value?.toUpperCase();
-  if (upper === 'ASRAMA' || upper === 'A') return 'ASRAMA';
+  if (!value) return 'NON ASRAMA';
+  
+  const upper = value.toUpperCase().trim();
+  
+  // Remove extra spaces and parentheses
+  const cleaned = upper.replace(/\s+/g, ' ').replace(/[()]/g, '');
+  
+  // Handle various formats:
+  // "SMA ASRAMA" -> "ASRAMA"
+  // "SMA NON ASRAMA" -> "NON ASRAMA"
+  // "ASRAMA" -> "ASRAMA"
+  // "NON ASRAMA" -> "NON ASRAMA"
+  // "A" -> "ASRAMA"
+  // "N" or "NA" -> "NON ASRAMA"
+  
+  if (cleaned.includes('NON ASRAMA') || cleaned.includes('NON-ASRAMA') || cleaned.includes('NONASRAMA')) {
+    return 'NON ASRAMA';
+  }
+  
+  if (cleaned.includes('ASRAMA') || cleaned === 'A') {
+    return 'ASRAMA';
+  }
+  
+  if (cleaned === 'N' || cleaned === 'NA' || cleaned === 'NON') {
+    return 'NON ASRAMA';
+  }
+  
+  // Default to NON ASRAMA for any unrecognized format
   return 'NON ASRAMA';
 };
 
@@ -476,13 +501,27 @@ export const downloadImportTemplate = () => {
       'Tanggal Tes': '2026-01-06',
       'Jam Tes': '08:00',
       'Petugas TU': 'Satria',
-      'Status Asrama': 'Non Asrama'
+      'Status Asrama': 'ASRAMA'
     },
     {
       'Nama Calon Siswa': 'Fatimah Zahra',
+      'Nama Orang Tua': 'Siti Aminah',
+      'NIK': '1234567890123457',
+      'Jenis Kelamin': 'Perempuan',
+      'Tempat Lahir': 'Bandung',
+      'Tanggal Lahir': '2010-08-20',
+      'No WhatsApp': '081234567891',
+      'Status Alumni': 'Ya',
+      'Tanggal Tes': '2026-01-06',
+      'Jam Tes': '08:00',
+      'Petugas TU': 'Satria',
+      'Status Asrama': 'NON ASRAMA'
+    },
+    {
+      'Nama Calon Siswa': 'Muhammad Ali',
       'Nama Orang Tua': '', // Contoh: boleh kosong, bisa diisi manual nanti
       'NIK': '',
-      'Jenis Kelamin': 'Perempuan',
+      'Jenis Kelamin': 'Laki-laki',
       'Tempat Lahir': '',
       'Tanggal Lahir': '',
       'No WhatsApp': '',
@@ -490,7 +529,7 @@ export const downloadImportTemplate = () => {
       'Tanggal Tes': '',
       'Jam Tes': '',
       'Petugas TU': '',
-      'Status Asrama': ''
+      'Status Asrama': 'ASRAMA'
     }
   ];
 
