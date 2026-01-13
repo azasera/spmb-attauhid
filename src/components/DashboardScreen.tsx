@@ -4,7 +4,7 @@ import { UserRole, Student, LembagaData, User } from '../types';
 import { downloadKartuPeserta, sendViaWhatsApp } from '../utils/pdfGenerator';
 import { exportStudentToPDF } from '../utils/exportUtils';
 import { downloadSuratKeterangan } from '../utils/suratKeteranganGenerator';
-import { getTahunAjaranFromDatabase, updateStudentNoTesToCurrentYear } from '../utils/helpers';
+import { getTahunAjaranFromDatabase, updateStudentNoTesToCurrentYear, formatTanggalSingkat } from '../utils/helpers';
 import ExportButtons from './ExportButtons';
 import ImportModal from './ImportModal';
 import { supabase } from '../lib/supabase';
@@ -84,11 +84,11 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
   // Fungsi untuk sync nomor tes siswa dengan tahun ajaran aktif
   const handleSyncTahunAjaran = async () => {
     if (isSyncing) return;
-    
+
     setIsSyncing(true);
     try {
       const result = await updateStudentNoTesToCurrentYear();
-      
+
       if (result.success) {
         if (result.updated > 0) {
           alert(`✅ ${result.message}\n\nHalaman akan di-reload untuk menampilkan perubahan.`);
@@ -135,58 +135,58 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 </div>
               )}
             </div>
-          <div className="flex items-center gap-2">
-            {/* Atur Tahun Ajaran (TU Only) */}
-            {userRole === 'TU' && (
-              <div className="hidden md:flex items-center gap-2 mr-2">
-                <label htmlFor="tahunAjaran" className="text-sm text-gray-700">Tahun Ajaran</label>
-                <input
-                  id="tahunAjaran"
-                  type="text"
-                  inputMode="numeric"
-                  pattern="\\d{4}"
-                  defaultValue={tahunAjaranFromDB || (typeof window !== 'undefined' && window.localStorage.getItem('tahunAjaran')) || ''}
-                  onBlur={async (e) => {
-                    const v = e.currentTarget.value.trim();
-                    if (/^\d{4}$/.test(v)) {
-                      window.localStorage.setItem('tahunAjaran', v);
-                      
-                      // Simpan ke Supabase juga untuk sinkronisasi global
-                      try {
-                        const { error } = await supabase
-                          .from('app_settings')
-                          .upsert({ key: 'tahun_ajaran', value: v });
-                        
-                      if (error) {
-                        console.warn('Gagal menyimpan Tahun Ajaran ke database:', error);
-                      // Toast disediakan dari App; opsional untuk production build
-                        } else {
-                          // Update state setelah berhasil save
-                          setTahunAjaranFromDB(v);
+            <div className="flex items-center gap-2">
+              {/* Atur Tahun Ajaran (TU Only) */}
+              {userRole === 'TU' && (
+                <div className="hidden md:flex items-center gap-2 mr-2">
+                  <label htmlFor="tahunAjaran" className="text-sm text-gray-700">Tahun Ajaran</label>
+                  <input
+                    id="tahunAjaran"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="\\d{4}"
+                    defaultValue={tahunAjaranFromDB || (typeof window !== 'undefined' && window.localStorage.getItem('tahunAjaran')) || ''}
+                    onBlur={async (e) => {
+                      const v = e.currentTarget.value.trim();
+                      if (/^\d{4}$/.test(v)) {
+                        window.localStorage.setItem('tahunAjaran', v);
+
+                        // Simpan ke Supabase juga untuk sinkronisasi global
+                        try {
+                          const { error } = await supabase
+                            .from('app_settings')
+                            .upsert({ key: 'tahun_ajaran', value: v });
+
+                          if (error) {
+                            console.warn('Gagal menyimpan Tahun Ajaran ke database:', error);
+                            // Toast disediakan dari App; opsional untuk production build
+                          } else {
+                            // Update state setelah berhasil save
+                            setTahunAjaranFromDB(v);
+                          }
+                        } catch (err) {
+                          console.warn('Error saving tahun ajaran to Supabase:', err);
                         }
-                      } catch (err) {
-                        console.warn('Error saving tahun ajaran to Supabase:', err);
+
+                        setTimeout(() => window.location.reload(), 1000);
+                      } else if (v !== '') {
+                        // noop: format invalid
                       }
-                      
-                      setTimeout(() => window.location.reload(), 1000);
-                    } else if (v !== '') {
-                      // noop: format invalid
-                    }
-                  }}
-                  placeholder="2627"
-                  className="w-20 px-2 py-1 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-100 focus:border-emerald-400 text-sm"
-                  title="Format 4 digit, mis. 2627"
-                />
-                <button
-                  onClick={handleSyncTahunAjaran}
-                  disabled={isSyncing}
-                  className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  title="Sync nomor tes siswa dengan tahun ajaran aktif"
-                >
-                  {isSyncing ? '⏳' : '🔄'} Sync
-                </button>
-              </div>
-            )}
+                    }}
+                    placeholder="2627"
+                    className="w-20 px-2 py-1 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-100 focus:border-emerald-400 text-sm"
+                    title="Format 4 digit, mis. 2627"
+                  />
+                  <button
+                    onClick={handleSyncTahunAjaran}
+                    disabled={isSyncing}
+                    className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Sync nomor tes siswa dengan tahun ajaran aktif"
+                  >
+                    {isSyncing ? '⏳' : '🔄'} Sync
+                  </button>
+                </div>
+              )}
               {currentUser?.role === 'ADMIN' && (
                 <button
                   onClick={onOpenAdmin}
@@ -207,7 +207,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </div>
 
           {/* Statistik Dashboard - Dikelompokkan per Kategori */}
-          
+
           {/* 1. Statistik Umum */}
           <div className="mb-6">
             <h3 className="text-lg font-bold text-blue-900 mb-3 drop-shadow-lg flex items-center gap-2">
@@ -508,7 +508,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               </select>
             </div>
           </div>
-          
+
           {/* Date Filter Row */}
           <div className="flex flex-col md:flex-row gap-4 mt-4 pt-4 border-t-2 border-gray-200">
             <div className="flex-1">
@@ -552,7 +552,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           <div className="flex justify-end mb-4">
             <ExportButtons students={filteredStudents} lembagaData={lembagaData} />
           </div>
-          
+
           {filteredStudents.length === 0 ? (
             <div className="text-center py-16 animate-scale-in">
               <div className="bg-gradient-to-br from-gray-100 to-gray-200 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -568,14 +568,14 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               {filteredStudents.map((student, index) => {
                 const lembaga = lembagaData.find(l => l.id === student.lembaga);
                 const Icon = lembaga?.icon || School;
-                
+
                 return (
                   <div key={student.id} className="bg-white/60 backdrop-blur-sm border-2 border-white rounded-2xl p-5 hover:shadow-xl transition-all transform hover:scale-[1.01] group animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
                     <div className="flex items-start gap-4">
                       <div className={`hidden md:flex items-center justify-center w-14 h-14 bg-gradient-to-br ${lembaga?.color} rounded-xl flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform`}>
                         <Icon className="w-7 h-7 text-white" />
                       </div>
-                      
+
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2 mb-3">
                           <div>
@@ -583,29 +583,27 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                             <p className="text-sm text-gray-600 font-medium">👨‍👩‍👦 {student.data.namaOrangTua}</p>
                           </div>
                           <div className="flex flex-col gap-2 items-end">
-                            <span className={`px-4 py-2 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 ${
-                              student.status === 'SUDAH DIUJI' 
-                                ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' 
-                                : 'bg-gradient-to-r from-orange-500 to-amber-500 text-white'
-                            }`}>
+                            <span className={`px-4 py-2 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 ${student.status === 'SUDAH DIUJI'
+                              ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white'
+                              : 'bg-gradient-to-r from-orange-500 to-amber-500 text-white'
+                              }`}>
                               {student.status === 'SUDAH DIUJI' ? '✓' : '○'}
                               {student.status}
                             </span>
                             {student.status === 'SUDAH DIUJI' && student.kelulusan && (
-                              <span className={`px-4 py-2 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 ${
-                                student.kelulusan === 'LULUS' 
-                                  ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white' 
-                                  : student.kelulusan === 'CADANGAN'
+                              <span className={`px-4 py-2 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 ${student.kelulusan === 'LULUS'
+                                ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white'
+                                : student.kelulusan === 'CADANGAN'
                                   ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white'
                                   : 'bg-gradient-to-r from-red-500 to-pink-500 text-white'
-                              }`}>
+                                }`}>
                                 {student.kelulusan === 'LULUS' ? '✓' : student.kelulusan === 'CADANGAN' ? '⚠' : '✗'}
                                 {student.kelulusan}
                               </span>
                             )}
                           </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm text-gray-600 mb-3">
                           <div className="flex items-center gap-2">
                             <FileText className="w-4 h-4 text-emerald-600" />
@@ -617,7 +615,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                           </div>
                           <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4 text-emerald-600" />
-                            <span>{student.data.tanggalTes} - {student.data.jamTes}</span>
+                            <span>{formatTanggalSingkat(student.data.tanggalTes)} - {student.data.jamTes}</span>
                           </div>
                         </div>
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ChevronLeft, Check, Users, User, ChevronDown } from 'lucide-react';
 import { Student, PenilaianScores, PenilaianData } from '../types';
 import RubricGuide from './RubricGuide';
-import { calculateKelulusan } from '../utils/helpers';
+import { calculateKelulusan, formatTanggalSingkat } from '../utils/helpers';
 import { rubrikSantri, rubrikOrtu } from '../data/constants';
 
 interface PenilaianScreenProps {
@@ -131,7 +131,7 @@ const PenilaianScreen: React.FC<PenilaianScreenProps> = ({
             <ChevronLeft className="w-5 h-5 mr-1" />
             Kembali ke Dashboard
           </button>
-          
+
           <div className="mb-4">
             <h2 className="text-xl md:text-3xl font-black bg-gradient-to-r from-emerald-700 to-teal-700 bg-clip-text text-transparent">
               📝 Penilaian Calon Siswa
@@ -155,7 +155,7 @@ const PenilaianScreen: React.FC<PenilaianScreenProps> = ({
               </div>
               <div>
                 <span className="text-emerald-700 font-semibold">Jadwal:</span>
-                <span className="ml-2 font-bold text-gray-700">{selectedStudent.data.tanggalTes} - {selectedStudent.data.jamTes}</span>
+                <span className="ml-2 font-bold text-gray-700">{formatTanggalSingkat(selectedStudent.data.tanggalTes)} - {selectedStudent.data.jamTes}</span>
               </div>
             </div>
           </div>
@@ -199,10 +199,9 @@ const PenilaianScreen: React.FC<PenilaianScreenProps> = ({
                       className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
                       title="Lihat indikator penilaian"
                     >
-                      <ChevronDown 
-                        className={`w-4 h-4 text-gray-600 transition-transform ${
-                          expandedAnakItems.has(index) ? 'rotate-180' : ''
-                        }`} 
+                      <ChevronDown
+                        className={`w-4 h-4 text-gray-600 transition-transform ${expandedAnakItems.has(index) ? 'rotate-180' : ''
+                          }`}
                       />
                     </button>
                   )}
@@ -276,10 +275,9 @@ const PenilaianScreen: React.FC<PenilaianScreenProps> = ({
                       className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
                       title="Lihat indikator penilaian"
                     >
-                      <ChevronDown 
-                        className={`w-4 h-4 text-gray-600 transition-transform ${
-                          expandedOrtuItems.has(index) ? 'rotate-180' : ''
-                        }`} 
+                      <ChevronDown
+                        className={`w-4 h-4 text-gray-600 transition-transform ${expandedOrtuItems.has(index) ? 'rotate-180' : ''
+                          }`}
                       />
                     </button>
                   )}
@@ -364,7 +362,7 @@ const PenilaianScreen: React.FC<PenilaianScreenProps> = ({
           <h3 className="text-xl font-black text-gray-800 mb-4 flex items-center">
             <span className="mr-2">📝</span> Informasi Tambahan
           </h3>
-          
+
           {/* Riwayat Penyakit */}
           <div className="mb-6">
             <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -445,24 +443,22 @@ const PenilaianScreen: React.FC<PenilaianScreenProps> = ({
               </div>
             </>
           )}
-          <div className={`p-6 rounded-2xl border-4 flex items-center justify-between shadow-xl ${
-            hasil.status === 'LULUS' 
-              ? 'bg-gradient-to-r from-emerald-100 to-green-100 border-emerald-400' 
-              : hasil.status === 'CADANGAN'
+          <div className={`p-6 rounded-2xl border-4 flex items-center justify-between shadow-xl ${hasil.status === 'LULUS'
+            ? 'bg-gradient-to-r from-emerald-100 to-green-100 border-emerald-400'
+            : hasil.status === 'CADANGAN'
               ? 'bg-gradient-to-r from-yellow-100 to-orange-100 border-yellow-400'
               : 'bg-gradient-to-r from-red-100 to-pink-100 border-red-400'
-          }`}>
+            }`}>
             <div>
               <div className="text-sm font-bold text-gray-700 mb-1">Nilai Akhir</div>
               <div className="text-5xl font-black text-gray-900">{hasil.finalScore.toFixed(2)}</div>
             </div>
-            <div className={`text-3xl font-black px-6 py-3 rounded-2xl shadow-lg ${
-              hasil.status === 'LULUS' 
-                ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white' 
-                : hasil.status === 'CADANGAN'
+            <div className={`text-3xl font-black px-6 py-3 rounded-2xl shadow-lg ${hasil.status === 'LULUS'
+              ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white'
+              : hasil.status === 'CADANGAN'
                 ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white'
                 : 'bg-gradient-to-r from-red-500 to-pink-500 text-white'
-            }`}>
+              }`}>
               {hasil.status === 'LULUS' ? '✓ LULUS' : hasil.status === 'CADANGAN' ? '⚠ CADANGAN' : '✗ TIDAK LULUS'}
             </div>
           </div>

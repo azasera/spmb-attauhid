@@ -34,51 +34,51 @@ export const getTahunAjaran = (): string => {
 export const updateStudentNoTesToCurrentYear = async (): Promise<{ success: boolean; message: string; updated: number }> => {
   try {
     const currentTahunAjaran = getTahunAjaran();
-    
+
     // Get all students
     const { data: students, error: fetchError } = await supabase
       .from('students')
       .select('id, noTes');
-    
+
     if (fetchError) {
       return { success: false, message: 'Gagal mengambil data siswa', updated: 0 };
     }
-    
+
     if (!students || students.length === 0) {
       return { success: true, message: 'Tidak ada data siswa', updated: 0 };
     }
-    
+
     // Filter siswa yang perlu diupdate (nomor tes tidak sesuai dengan tahun ajaran aktif)
     const studentsToUpdate = students.filter(student => {
       const parsedTA = parseTahunAjaranFromNoTes(student.noTes);
       return parsedTA && parsedTA !== currentTahunAjaran;
     });
-    
+
     if (studentsToUpdate.length === 0) {
       return { success: true, message: 'Semua nomor tes sudah sesuai', updated: 0 };
     }
-    
+
     // Update nomor tes untuk setiap siswa
     let updatedCount = 0;
     for (const student of studentsToUpdate) {
       const newNoTes = student.noTes.replace(/\d{4}/, currentTahunAjaran);
-      
+
       const { error: updateError } = await supabase
         .from('students')
         .update({ noTes: newNoTes })
         .eq('id', student.id);
-      
+
       if (!updateError) {
         updatedCount++;
       }
     }
-    
-    return { 
-      success: true, 
-      message: `Berhasil update ${updatedCount} dari ${studentsToUpdate.length} siswa`, 
-      updated: updatedCount 
+
+    return {
+      success: true,
+      message: `Berhasil update ${updatedCount} dari ${studentsToUpdate.length} siswa`,
+      updated: updatedCount
     };
-    
+
   } catch (error) {
     console.error('Error updating student noTes:', error);
     return { success: false, message: 'Terjadi kesalahan saat update', updated: 0 };
@@ -93,17 +93,17 @@ export const getTahunAjaranFromDatabase = async (): Promise<string | null> => {
       .select('value')
       .eq('key', 'tahun_ajaran')
       .single();
-    
+
     if (error) {
       console.warn('Gagal load tahun ajaran dari database:', error);
       return null;
     }
-    
+
     const value = data?.value;
     if (/^\d{4}$/.test(value)) {
       return value;
     }
-    
+
     return null;
   } catch (error) {
     console.warn('Error loading tahun ajaran from database:', error);
@@ -116,18 +116,18 @@ export const parseTahunAjaranFromNoTes = (noTes: string): string | null => {
   try {
     const clean = (noTes || '').trim();
     if (!clean) return null;
-    
+
     // Format 1: PREFIX-TA-NNN (e.g., SD-2627-001)
     const parts = clean.split('-');
     if (parts.length === 3 && /^\d{4}$/.test(parts[1])) {
       return parts[1];
     }
-    
+
     // Format 2: TA-NNN (e.g., 2627-001)
     if (parts.length === 2 && /^\d{4}$/.test(parts[0])) {
       return parts[0];
     }
-    
+
     // Format 3: TANNN (e.g., 2627001) - ambil 4 digit pertama
     if (/^\d{4,}/.test(clean)) {
       const ta = clean.slice(0, 4);
@@ -138,7 +138,7 @@ export const parseTahunAjaranFromNoTes = (noTes: string): string | null => {
         return ta;
       }
     }
-    
+
     return null;
   } catch {
     return null;
@@ -158,7 +158,7 @@ export const formatTahunAjaranDisplay = (ta: string): string => {
 
 export const generateNoTes = (lembagaId: string, registeredStudents: Student[]): string => {
   const tahunAjaran = getTahunAjaran();
-  
+
   // Tentukan prefix berdasarkan lembaga ID
   let prefix = '';
   switch (lembagaId) {
@@ -174,7 +174,7 @@ export const generateNoTes = (lembagaId: string, registeredStudents: Student[]):
     default:
       prefix = lembagaId;
   }
-  
+
   // Filter siswa dengan lembaga yang sama
   const existingNumbers = registeredStudents
     .filter(s => s.lembaga === lembagaId)
@@ -187,9 +187,9 @@ export const generateNoTes = (lembagaId: string, registeredStudents: Student[]):
       return 0;
     })
     .filter(n => !isNaN(n) && n > 0);
-  
+
   const nextNumber = existingNumbers.length > 0 ? Math.max(...existingNumbers) + 1 : 1;
-  
+
   // Format: SD-2627-001
   return `${prefix}-${tahunAjaran}-${nextNumber.toString().padStart(3, '0')}`;
 };
@@ -232,7 +232,7 @@ export const getFilteredStudents = (
   }
 
   if (searchQuery) {
-    filtered = filtered.filter(s => 
+    filtered = filtered.filter(s =>
       s.data.namaSiswa.toLowerCase().includes(searchQuery.toLowerCase()) ||
       s.data.namaOrangTua.toLowerCase().includes(searchQuery.toLowerCase()) ||
       s.noTes.toLowerCase().includes(searchQuery.toLowerCase())
@@ -310,7 +310,7 @@ export const calculateKelulusan = (
   const hafalanPercent = (hafalanOk / 15) * 100;
 
   let finalScoreRaw: number;
-  
+
   // Untuk SD hanya menggunakan wawancara (100%)
   if (lembaga === 'SDITA') {
     finalScoreRaw = interviewPercent;
@@ -323,7 +323,7 @@ export const calculateKelulusan = (
   }
 
   const finalScore = Math.round(finalScoreRaw * 100) / 100; // 2 decimal places
-  
+
   // Tentukan status berdasarkan nilai akhir
   let status: KelulusanStatus;
   if (finalScore >= 70) {
@@ -343,5 +343,37 @@ export const calculateKelulusan = (
       hafalan: Math.round(hafalanPercent * 100) / 100
     }
   };
+};
+
+// Format tanggal ke format Indonesia (contoh: "Senin, 6 Januari 2026")
+export const formatTanggalIndonesia = (dateString: string): string => {
+  if (!dateString) return '';
+
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('id-ID', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  } catch {
+    return dateString;
+  }
+};
+
+// Format tanggal ke format Indonesia singkat (contoh: "06/01/2026")
+export const formatTanggalSingkat = (dateString: string): string => {
+  if (!dateString) return '';
+
+  try {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  } catch {
+    return dateString;
+  }
 };
 

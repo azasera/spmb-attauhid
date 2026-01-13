@@ -44,12 +44,12 @@ export const parseExcelFile = async (file: File): Promise<ParsedStudent[]> => {
         const workbook = XLSX.read(data, { type: 'binary' });
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
-        
+
         // Convert to JSON
         const jsonData: ImportRow[] = XLSX.utils.sheet_to_json(worksheet);
 
         // Parse and validate each row
-        const parsedStudents = jsonData.map((row, index) => 
+        const parsedStudents = jsonData.map((row, index) =>
           parseStudentRow(row, index + 2) // +2 because Excel rows start at 1 and header is row 1
         );
 
@@ -101,11 +101,11 @@ const parseStudentRow = (row: ImportRow, rowNumber: number): ParsedStudent => {
   // Validate date format only if filled
   const tanggalLahir = toString(row['Tanggal Lahir']);
   const tanggalTes = toString(row['Tanggal Tes']);
-  
+
   if (tanggalLahir && !isValidDate(tanggalLahir)) {
     errors.push('Format Tanggal Lahir tidak valid (gunakan YYYY-MM-DD atau DD/MM/YYYY)');
   }
-  
+
   if (tanggalTes && !isValidDate(tanggalTes)) {
     errors.push('Format Tanggal Tes tidak valid (gunakan YYYY-MM-DD atau DD/MM/YYYY)');
   }
@@ -154,12 +154,12 @@ const normalizeAlumni = (value: string): 'YA' | 'TIDAK' => {
 
 const normalizeAsrama = (value: string): 'ASRAMA' | 'NON ASRAMA' => {
   if (!value) return 'NON ASRAMA';
-  
+
   const upper = value.toUpperCase().trim();
-  
+
   // Remove extra spaces and parentheses
   const cleaned = upper.replace(/\s+/g, ' ').replace(/[()]/g, '');
-  
+
   // Handle various formats:
   // "SMA ASRAMA" -> "ASRAMA"
   // "SMA NON ASRAMA" -> "NON ASRAMA"
@@ -167,81 +167,108 @@ const normalizeAsrama = (value: string): 'ASRAMA' | 'NON ASRAMA' => {
   // "NON ASRAMA" -> "NON ASRAMA"
   // "A" -> "ASRAMA"
   // "N" or "NA" -> "NON ASRAMA"
-  
+
   if (cleaned.includes('NON ASRAMA') || cleaned.includes('NON-ASRAMA') || cleaned.includes('NONASRAMA')) {
     return 'NON ASRAMA';
   }
-  
+
   if (cleaned.includes('ASRAMA') || cleaned === 'A') {
     return 'ASRAMA';
   }
-  
+
   if (cleaned === 'N' || cleaned === 'NA' || cleaned === 'NON') {
     return 'NON ASRAMA';
   }
-  
+
   // Default to NON ASRAMA for any unrecognized format
   return 'NON ASRAMA';
 };
 
 const normalizePhoneNumber = (phone: string): string => {
   if (!phone) return ''; // Return empty if no phone number
-  
+
   // Remove all non-digit characters
   let cleaned = phone.replace(/\D/g, '');
-  
+
   if (!cleaned) return ''; // Return empty if nothing left after cleaning
-  
+
   // If starts with 0, replace with 62
   if (cleaned.startsWith('0')) {
     cleaned = '62' + cleaned.substring(1);
   }
-  
+
   // If doesn't start with 62, add it
   if (!cleaned.startsWith('62')) {
     cleaned = '62' + cleaned;
   }
-  
+
   return cleaned;
 };
 
 const normalizeDate = (dateStr: string): string => {
   if (!dateStr) return '';
-  
+
   const str = String(dateStr).trim();
-  
+  console.log('[normalizeDate] Input:', str);
+
   // Try Excel serial date first (most common from Excel)
   const serialDate = parseFloat(str);
   if (!isNaN(serialDate) && serialDate > 100 && serialDate < 100000) {
     // Excel serial date (days since 1900-01-01)
-    const excelEpoch = new Date(1899, 11, 30);
-    const date = new Date(excelEpoch.getTime() + serialDate * 86400000);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    // Use UTC throughout to avoid timezone offset issues
+    // Excel epoch: December 30, 1899 at 12:00:00 UTC (noon to avoid boundary issues)
+    const excelEpochTime = Date.UTC(1899, 11, 30, 12, 0, 0);
+    const targetTime = excelEpochTime + (serialDate * 86400000);
+    const date = new Date(targetTime);
+
+    // Extract date components in UTC to avoid timezone shift
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const result = `${year}-${month}-${day}`;
+    console.log(`[normalizeDate] Excel serial ${serialDate} -> ${result} (12h offset)`);
+    return result;
   }
-  
-  // Format: DD/MM/YYYY or DD-MM-YYYY
+
+  // Format: DD/MM/YYYY or DD-MM-YYYY (4-digit year)
   const ddmmyyyyMatch = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
   if (ddmmyyyyMatch) {
     const [, day, month, year] = ddmmyyyyMatch;
-    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    const result = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    console.log(`[normalizeDate] DD/MM/YYYY ${str} -> ${result}`);
+    return result;
   }
-  
+
+  // Format: DD/MM/YY or DD-MM-YY (2-digit year)
+  const ddmmyyMatch = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2})$/);
+  if (ddmmyyMatch) {
+    const [, day, month, yy] = ddmmyyMatch;
+    // Convert 2-digit year to 4-digit
+    // 00-49 -> 2000-2049, 50-99 -> 1950-1999
+    const year = parseInt(yy) < 50 ? `20${yy}` : `19${yy}`;
+    const result = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    console.log(`[normalizeDate] DD/MM/YY ${str} -> ${result}`);
+    return result;
+  }
+
   // Format: YYYY-MM-DD (already correct)
   const yyyymmddMatch = str.match(/^\d{4}-\d{2}-\d{2}$/);
   if (yyyymmddMatch) {
+    console.log(`[normalizeDate] YYYY-MM-DD ${str} -> ${str}`);
     return str;
   }
-  
+
   // Format: YYYY/MM/DD
   const yyyymmddSlashMatch = str.match(/^(\d{4})[\/](\d{1,2})[\/](\d{1,2})$/);
   if (yyyymmddSlashMatch) {
     const [, year, month, day] = yyyymmddSlashMatch;
-    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    const result = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    console.log(`[normalizeDate] YYYY/MM/DD ${str} -> ${result}`);
+    return result;
   }
-  
+
+  // Debug: log unrecognized format
+  console.warn('[normalizeDate] Date format not recognized:', str);
   return str;
 };
 
@@ -295,7 +322,7 @@ export const importStudentsToDatabase = async (
         // Student exists - update empty fields only
         if (importMode === 'update-empty') {
           const updatedData = mergeStudentData(existingStudent.data, parsedStudent.formData);
-          
+
           const { error } = await supabase
             .from(TABLES.STUDENTS)
             .update({ data: updatedData })
@@ -364,7 +391,7 @@ const generateUniqueNoTes = async (lembagaId: string, maxRetries = 10): Promise<
     const tahunAjaran = new Date().getFullYear().toString().slice(-2) + (new Date().getFullYear() + 1).toString().slice(-2);
     const randomNum = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
     const noTes = `${lembagaId}-${tahunAjaran}-${randomNum}`;
-    
+
     // Check if noTes already exists
     const { data, error } = await supabase
       .from(TABLES.STUDENTS)
