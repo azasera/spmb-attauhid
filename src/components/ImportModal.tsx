@@ -1,4 +1,3 @@
-```
 import React, { useState } from 'react';
 import { X, Upload, Download, FileSpreadsheet, AlertCircle, CheckCircle, Loader } from 'lucide-react';
 import { LembagaData } from '../types';
@@ -63,7 +62,7 @@ const ImportModal: React.FC<ImportModalProps> = ({
       );
       setImportResult(result);
       setStep('result');
-      
+
       if (result.successCount > 0) {
         onImportComplete();
       }
@@ -324,20 +323,20 @@ const ImportModal: React.FC<ImportModalProps> = ({
           {step === 'result' && importResult && (
             <div className="space-y-6">
               {/* Result Summary */}
-              <div className={`${ importResult.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200' } border - 2 rounded - 2xl p - 6 text - center`}>
-                <div className={`w - 16 h - 16 ${ importResult.success ? 'bg-green-100' : 'bg-red-100' } rounded - full flex items - center justify - center mx - auto mb - 4`}>
+              <div className={`${importResult.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'} border - 2 rounded - 2xl p - 6 text - center`}>
+                <div className={`w - 16 h - 16 ${importResult.success ? 'bg-green-100' : 'bg-red-100'} rounded - full flex items - center justify - center mx - auto mb - 4`}>
                   {importResult.success ? (
                     <CheckCircle className="w-8 h-8 text-green-600" />
                   ) : (
                     <AlertCircle className="w-8 h-8 text-red-600" />
                   )}
                 </div>
-                <h3 className={`text - 2xl font - black ${ importResult.success ? 'text-green-900' : 'text-red-900' } mb - 2`}>
+                <h3 className={`text - 2xl font - black ${importResult.success ? 'text-green-900' : 'text-red-900'} mb - 2`}>
                   {importResult.success ? 'Import Berhasil!' : 'Import Selesai dengan Error'}
                 </h3>
-                <p className={`${ importResult.success ? 'text-green-700' : 'text-red-700' } font - semibold`}>
+                <p className={`${importResult.success ? 'text-green-700' : 'text-red-700'} font - semibold`}>
                   {importResult.successCount} data berhasil diimport
-                  {importResult.failedCount > 0 && `, ${ importResult.failedCount } data gagal`}
+                  {importResult.failedCount > 0 && `, ${importResult.failedCount} data gagal`}
                 </p>
               </div>
 
