@@ -15,6 +15,7 @@ export interface ImportRow {
   'Jam Tes': string;
   'Petugas TU': string;
   'Status Asrama': string;
+  'Status Kelulusan': string;
 }
 
 export interface ImportResult {
@@ -28,6 +29,7 @@ export interface ImportResult {
 
 export interface ParsedStudent {
   formData: FormData;
+  kelulusan?: 'LULUS' | 'CADANGAN' | 'TIDAK LULUS';
   rowNumber: number;
   isValid: boolean;
   errors: string[];
@@ -114,6 +116,9 @@ const parseStudentRow = (row: ImportRow, rowNumber: number): ParsedStudent => {
   let kontakOrtu = toString(row['No WhatsApp']);
   kontakOrtu = normalizePhoneNumber(kontakOrtu);
 
+  // Parse status kelulusan (optional)
+  const kelulusan = normalizeKelulusan(toString(row['Status Kelulusan']));
+
   // Create FormData object
   const formData: FormData = {
     namaSiswa: toString(row['Nama Calon Siswa']),
@@ -132,6 +137,7 @@ const parseStudentRow = (row: ImportRow, rowNumber: number): ParsedStudent => {
 
   return {
     formData,
+    kelulusan,
     rowNumber,
     isValid: errors.length === 0,
     errors
@@ -177,6 +183,34 @@ const normalizeAsrama = (value: string): 'ASRAMA' | 'NON ASRAMA' => {
   }
 
   if (cleaned === 'N' || cleaned === 'NA' || cleaned === 'NON') {
+    return 'NON ASRAMA';
+  }
+
+  // Default to NON ASRAMA for any unrecognized format
+  return 'NON ASRAMA';
+};
+
+const normalizeKelulusan = (value: string): 'LULUS' | 'CADANGAN' | 'TIDAK LULUS' | undefined => {
+  if (!value) return undefined;
+  
+  const upper = value.toUpperCase().trim();
+  
+  // Handle various formats
+  if (upper === 'LULUS' || upper === 'L' || upper === 'LOLOS') {
+    return 'LULUS';
+  }
+  
+  if (upper === 'CADANGAN' || upper === 'C' || upper === 'CAD') {
+    return 'CADANGAN';
+  }
+  
+  if (upper === 'TIDAK LULUS' || upper === 'TL' || upper === 'TIDAK' || upper === 'GAGAL') {
+    return 'TIDAK LULUS';
+  }
+  
+  // If unrecognized, return undefined (will be treated as not yet tested)
+  return undefined;
+};
     return 'NON ASRAMA';
   }
 
@@ -322,10 +356,20 @@ export const importStudentsToDatabase = async (
         // Student exists - update empty fields only
         if (importMode === 'update-empty') {
           const updatedData = mergeStudentData(existingStudent.data, parsedStudent.formData);
+          
+          // Prepare update object
+          const updateObj: any = { data: updatedData };
+          
+          // Update kelulusan if provided and existing is empty
+          if (parsedStudent.kelulusan && !existingStudent.kelulusan) {
+            updateObj.kelulusan = parsedStudent.kelulusan;
+            // If kelulusan is set, also set status to SUDAH DIUJI
+            updateObj.status = 'SUDAH DIUJI';
+          }
 
           const { error } = await supabase
             .from(TABLES.STUDENTS)
-            .update({ data: updatedData })
+            .update(updateObj)
             .eq('id', existingStudent.id);
 
           if (error) throw error;
@@ -353,7 +397,8 @@ export const importStudentsToDatabase = async (
           data: parsedStudent.formData,
           penilaianAnak: {},
           penilaianOrtu: {},
-          status: 'BELUM DIUJI',
+          status: parsedStudent.kelulusan ? 'SUDAH DIUJI' : 'BELUM DIUJI',
+          kelulusan: parsedStudent.kelulusan,
           mathCorrect: 0,
           hafalanBenar: 0,
           nilaiAkhir: 0,
@@ -528,7 +573,8 @@ export const downloadImportTemplate = () => {
       'Tanggal Tes': '2026-01-06',
       'Jam Tes': '08:00',
       'Petugas TU': 'Satria',
-      'Status Asrama': 'ASRAMA'
+      'Status Asrama': 'ASRAMA',
+      'Status Kelulusan': 'LULUS'
     },
     {
       'Nama Calon Siswa': 'Fatimah Zahra',
@@ -542,7 +588,8 @@ export const downloadImportTemplate = () => {
       'Tanggal Tes': '2026-01-06',
       'Jam Tes': '08:00',
       'Petugas TU': 'Satria',
-      'Status Asrama': 'NON ASRAMA'
+      'Status Asrama': 'NON ASRAMA',
+      'Status Kelulusan': 'CADANGAN'
     },
     {
       'Nama Calon Siswa': 'Muhammad Ali',
@@ -556,7 +603,8 @@ export const downloadImportTemplate = () => {
       'Tanggal Tes': '',
       'Jam Tes': '',
       'Petugas TU': '',
-      'Status Asrama': 'ASRAMA'
+      'Status Asrama': 'ASRAMA',
+      'Status Kelulusan': '' // Kosong = belum diuji
     }
   ];
 
@@ -577,7 +625,8 @@ export const downloadImportTemplate = () => {
     { wch: 15 }, // Tanggal Tes
     { wch: 10 }, // Jam Tes
     { wch: 15 }, // Petugas TU
-    { wch: 15 }  // Status Asrama
+    { wch: 15 }, // Status Asrama
+    { wch: 18 }  // Status Kelulusan
   ];
 
   XLSX.writeFile(workbook, 'Template_Import_Santri_Baru.xlsx');
