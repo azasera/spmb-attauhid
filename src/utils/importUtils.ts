@@ -211,12 +211,6 @@ const normalizeKelulusan = (value: string): 'LULUS' | 'CADANGAN' | 'TIDAK LULUS'
   // If unrecognized, return undefined (will be treated as not yet tested)
   return undefined;
 };
-    return 'NON ASRAMA';
-  }
-
-  // Default to NON ASRAMA for any unrecognized format
-  return 'NON ASRAMA';
-};
 
 const normalizePhoneNumber = (phone: string): string => {
   if (!phone) return ''; // Return empty if no phone number
