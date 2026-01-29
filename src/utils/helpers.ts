@@ -1,5 +1,5 @@
 import { Student, PenilaianData, PenilaianScores, KelulusanStatus } from '../types';
-import { penilaianSD, penilaianSMP, penilaianSMA } from '../data/constants';
+import { penilaianSD, penilaianSMP, penilaianSMA, penilaianMTA } from '../data/constants';
 import { supabase } from '../lib/supabase';
 
 // Fungsi untuk mendapatkan tahun ajaran (format: 2627)
@@ -171,6 +171,9 @@ export const generateNoTes = (lembagaId: string, registeredStudents: Student[]):
     case 'SMAITA':
       prefix = 'SMA';
       break;
+    case 'MTA':
+      prefix = 'MTA';
+      break;
     default:
       prefix = lembagaId;
   }
@@ -202,6 +205,8 @@ export const getPenilaianByLembaga = (lembagaId: string): PenilaianData => {
       return penilaianSMP;
     case 'SMAITA':
       return penilaianSMA;
+    case 'MTA':
+      return penilaianMTA;
     default:
       return penilaianSMP;
   }
@@ -279,7 +284,7 @@ export const getInitialFormData = () => ({
 
 // Hitung kelulusan berdasarkan bobot:
 // SD: Wawancara 100%
-// SMP/SMA: Wawancara 30%, Matematika 35%, Hafalan 35%
+// SMP/SMA/MTA: Wawancara 30%, Matematika 35%, Hafalan 35%
 // KKM: 70
 export const calculateKelulusan = (
   penilaianAnak: PenilaianScores,
@@ -315,7 +320,7 @@ export const calculateKelulusan = (
   if (lembaga === 'SDITA') {
     finalScoreRaw = interviewPercent;
   } else {
-    // Untuk SMP/SMA menggunakan bobot: Wawancara 30%, Matematika 35%, Hafalan 35%
+    // Untuk SMP/SMA/MTA menggunakan bobot: Wawancara 30%, Matematika 35%, Hafalan 35%
     const weightedInterview = interviewPercent * 0.30;
     const weightedMath = mathPercent * 0.35;
     const weightedHafalan = hafalanPercent * 0.35;

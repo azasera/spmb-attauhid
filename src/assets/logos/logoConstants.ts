@@ -19,6 +19,12 @@ export const LOGO_SMA_ATTAUHID = {
   height: 24
 };
 
+export const LOGO_MTA_ATTAUHID = {
+  base64: '', // MTA logo base64 will be added later
+  width: 25,
+  height: 25
+};
+
 // Fungsi helper untuk menambahkan logo ke PDF
 export const addLogoPDF = (doc: any, logoData: any, x: number, y: number, logoType: string = 'LOGO') => {
   if (logoData.base64) {
@@ -54,6 +60,9 @@ export const addLogoPlaceholder = (doc: any, centerX: number, centerY: number, r
     doc.text('AT-TAUHID', centerX, centerY + 2, { align: 'center' });
   } else if (logoType === 'SMA') {
     doc.text('SMA', centerX, centerY - 2, { align: 'center' });
+    doc.text('AT-TAUHID', centerX, centerY + 2, { align: 'center' });
+  } else if (logoType === 'MTA') {
+    doc.text('MTA', centerX, centerY - 2, { align: 'center' });
     doc.text('AT-TAUHID', centerX, centerY + 2, { align: 'center' });
   } else {
     doc.text(logoType, centerX, centerY, { align: 'center' });

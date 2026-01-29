@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import { Student } from '../types';
 import { lembagaData } from '../data/constants';
-import { LOGO_PONPES_ICT, LOGO_SMP_ATTAUHID, LOGO_SMA_ATTAUHID, addLogoPDF } from '../assets/logos/logoConstants';
+import { LOGO_PONPES_ICT, LOGO_SMP_ATTAUHID, LOGO_SMA_ATTAUHID, LOGO_MTA_ATTAUHID, addLogoPDF } from '../assets/logos/logoConstants';
 
 export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   const doc = new jsPDF({
@@ -29,24 +29,34 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   // Tentukan jenis lembaga berdasarkan nomor tes (lebih akurat)
   const isSMPFromNoTes = student.noTes.toUpperCase().startsWith('SMP');
   const isSMAFromNoTes = student.noTes.toUpperCase().startsWith('SMA');
+  const isMTAFromNoTes = student.noTes.toUpperCase().startsWith('MTA');
 
   // Prioritaskan deteksi dari nomor tes, fallback ke data lembaga
   let isSMP: boolean;
+  let isMTA: boolean;
   if (isSMPFromNoTes) {
     isSMP = true;
+    isMTA = false;
   } else if (isSMAFromNoTes) {
     isSMP = false;
+    isMTA = false;
+  } else if (isMTAFromNoTes) {
+    isSMP = false;
+    isMTA = true;
   } else {
     // Fallback ke data lembaga jika nomor tes tidak jelas
-    isSMP = lembaga?.id === 'smp';
+    isSMP = lembaga?.id === 'SMPITA';
+    isMTA = lembaga?.id === 'MTA';
   }
 
-  const lembagaText = isSMP ? 'SMP' : 'SMA';
-  const lembagaCode = isSMP ? 'SMPITA' : 'SMAITA';
+  const lembagaText = isSMP ? 'SMP' : (isMTA ? 'MTA' : 'SMA');
+  const lembagaCode = isSMP ? 'SMPITA' : (isMTA ? 'MTA' : 'SMAITA');
 
   // Data kepala sekolah
   const kepalaSekolah = isSMP
     ? { nama: 'Meditoma, S.Pd.', niy: '199405220720181024' }
+    : isMTA
+    ? { nama: 'Azali, S.Pd.', niy: '199001151220231161' }
     : { nama: 'Delly Arhadath, S.Pd.', niy: '200001120120231160' };
 
   // Status asrama dari data form siswa
@@ -87,8 +97,8 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   addLogoPDF(doc, LOGO_PONPES_ICT, 15, 10, 'PONPES');
 
   // Logo Kanan - Berdasarkan deteksi lembaga yang sudah diperbaiki (geser ke atas)
-  const rightLogo = isSMP ? LOGO_SMP_ATTAUHID : LOGO_SMA_ATTAUHID;
-  const rightLogoType = isSMP ? 'SMP' : 'SMA';
+  const rightLogo = isSMP ? LOGO_SMP_ATTAUHID : (isMTA ? LOGO_MTA_ATTAUHID : LOGO_SMA_ATTAUHID);
+  const rightLogoType = isSMP ? 'SMP' : (isMTA ? 'MTA' : 'SMA');
   addLogoPDF(doc, rightLogo, 171, 10, rightLogoType);
 
   // Teks Header
@@ -102,17 +112,22 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   doc.setFont('helvetica', 'normal');
   doc.text('Jl. Gerunggang RT 08 RW 03 Kel. Gerunggang Kec. Kepala Tujuh, Kec. Gerunggang, Prov. Bangka Belitung', 105, 36, { align: 'center' });
   
-  // Kontak yang berbeda untuk SMP dan SMA
-  const telpLembaga = isSMP ? '+62 857-5802-1593' : '+62 812-9758-5207';
-  const emailLembaga = isSMP ? 'smpita.attauhid@gmail.com' : 'attauhidsmaita@gmail.com';
+  // Kontak yang berbeda untuk SMP, MTA, dan SMA
+  const telpLembaga = isSMP ? '+62 857-5802-1593' : (isMTA ? '+62 812-9758-5207' : '+62 812-9758-5207');
+  const emailLembaga = isSMP ? 'smpita.attauhid@gmail.com' : (isMTA ? 'mta.attauhid@gmail.com' : 'attauhidsmaita@gmail.com');
   doc.text(`Telp. ${telpLembaga} e-mail : ${emailLembaga}`, 105, 42, { align: 'center' });
   
-  // Nomor/NPSN berbeda untuk SMP dan SMA
+  // Nomor/NPSN berbeda untuk SMP, MTA, dan SMA
   doc.setFontSize(10);
   doc.setFont('helvetica', 'bold');
   if (isSMP) {
     // SMP: tampilkan NPSN
     doc.text('NPSN : 70044522', 105, 47, { align: 'center' });
+  } else if (isMTA) {
+    // MTA: tampilkan nomor khusus MTA
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text('NOMOR : 188.5/ 04/ DINDIK. MTA/ DPMPTSP/2023', 105, 47, { align: 'center' });
   } else {
     // SMA: tampilkan nomor khusus (tanpa NPSN)
     doc.setFontSize(9);
@@ -139,8 +154,9 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   doc.setFont('helvetica', 'normal');
   let yPos = 85;
 
+  const lembagaFullName = isMTA ? 'Manzhumah Takhoshush Al Qur\'an' : `${lembagaText} Islam Tahfizh Al-Qur'an`;
   const pembukaan = [
-    `Yang bertanda tangan di bawah ini, Kepala ${lembagaText} Islam Tahfizh Al-Qur'an At-Tauhid`,
+    `Yang bertanda tangan di bawah ini, Kepala ${lembagaFullName} At-Tauhid`,
     'Pangkalpinang Provinsi Bangka Belitung, menerangkan bahwa:'
   ];
 

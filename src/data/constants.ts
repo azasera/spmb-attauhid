@@ -40,6 +40,19 @@ export const lembagaData: LembagaData[] = [
       street: 'Jl. Gerunggang Dalam RT.08 RW.03, Kel. Air Kepala Tujuh, Kec. Gerunggang, Kota Pangkalpinang',
       mapsUrl: 'https://share.google/HItV1We2IbNUOh2R8'
     }
+  },
+  {
+    id: 'MTA',
+    name: 'MTA',
+    fullName: 'Manzhumah Takhoshush Al Qur\'an',
+    icon: BookOpen,
+    color: 'from-orange-500 to-orange-600',
+    prefix: 'MTA',
+    address: {
+      building: 'Ponpes Islamic Centre At-Tauhid Bangka Belitung',
+      street: 'Jl. Gerunggang Dalam RT.08 RW.03, Kel. Air Kepala Tujuh, Kec. Gerunggang, Kota Pangkalpinang',
+      mapsUrl: 'https://share.google/HItV1We2IbNUOh2R8'
+    }
   }
 ];
 
@@ -182,6 +195,47 @@ export const penilaianSMA: PenilaianData = {
   ]
 };
 
+export const penilaianMTA: PenilaianData = {
+  anak: [
+    'Bangun Pagi',
+    'Sholat Lima Waktu',
+    'Rutinitas Baca Al Qur\'an',
+    'Kemampuan Baca Al Qur\'an | TES BACA QUR\'AN',
+    'Jumlah Hafalan',
+    'Nilai Tugas Hafalan',
+    'Nilai Tajwid',
+    'Bersedia Menghafal Al Qur\'an sesuai target Setiap hari',
+    'Kegiatan di rumah setelah isya dan Setelah subuh',
+    'Alasan memilih MTA At Tauhid',
+    'Komitmen Tidak Menonton Tayangan Tidak Mendidik',
+    'Komitmen untuk menaati semua aturan pondok',
+    'Prestasi yang pernah diraih'
+  ],
+  ortu: [
+    'Penampilan orang tua',
+    'Sikap orang tua jika anak tidak sholat 5 waktu',
+    'Tipe anak (cari Info dari orang tua)',
+    'Kajian yang diikuti orang tua',
+    'Kesanggupan mengikuti kajian dan Program Tahsin Wali Santri',
+    'Alasan memilih MTA At Tauhid',
+    'Pernyataan sanggup sekolah meski kurikulumnya berat',
+    'Komitmen tidak memberikan HP kepada anak',
+    'Cara orang tua agar anak bisa menghafal',
+    'Komitmen membantu membimbing anak menghafal di rumah',
+    'Kesanggupan melunasi uang pangkal',
+    'Kesanggupan membayar biaya tambahan kegiatan',
+    'Kesanggupan melunasi biaya daftar ulang Rp. 600.000',
+    'Sikap terhadap uang pangkal tidak bisa dikembalikan',
+    'Kesanggupan mentaati semua aturan sekolah',
+    'Sikap terhadap Peraturan kredit poin',
+    'Sikap terhadap SPP paling lambat tgl 10',
+    'Sikap terhadap Peraturan Pengabdian santri',
+    'Sikap terhadap Ijazah pondok diberikan setelah 1 tahun',
+    'Penilaian terhadap Anak',
+    'Penilaian terhadap orang tua'
+  ]
+};
+
 // Rubrik penilaian (santri & ortu) untuk tooltip per item
 // Catatan: ringkas, berbasis indikator yang mudah diamati
 export const rubrikSantri: Record<string, string> = {
@@ -206,6 +260,7 @@ export const rubrikSantri: Record<string, string> = {
   'Bersedia diberi sanksi jika tidak menghafal': '1: tidak bersedia; 3: bersedia dengan syarat; 5: bersedia dan patuh.',
   'Kegiatan di rumah setelah isya dan Setelah subuh': '1: tidak teratur; 3: kadang teratur; 5: teratur untuk ibadah/belajar.',
   'Alasan memilih sekolah di At Tauhid': '1: tidak jelas; 3: cukup jelas; 5: alasan kuat dan sejalan visi.',
+  'Alasan memilih MTA At Tauhid': '1: tidak jelas; 3: cukup jelas; 5: alasan kuat dan sejalan visi MTA.',
   'Komitmen tidak memiliki HP secara pribadi': '1: tidak komit; 3: komit dengan pengecualian; 5: komit penuh.',
   'Komitmen untuk menaati semua aturan pondok': '1: sering melanggar; 3: kadang melanggar; 5: taat aturan.',
   'Komitmen Tidak Menonton Tayangan Tidak Mendidik': '1: sering menonton; 3: mulai dikurangi; 5: meninggalkan konsisten.',
@@ -220,6 +275,7 @@ export const rubrikOrtu: Record<string, string> = {
   'Kesanggupan orang tua mengikuti kajian dan Program Tahsin Wali Santri': '1: tidak sanggup; 3: sanggup sebagian; 5: sanggup konsisten.',
   'Kesanggupan mengikuti kajian dan Program Tahsin Wali Santri': '1: tidak sanggup; 3: sanggup sebagian; 5: sanggup konsisten.',
   'Alasan memilih sekolah di At Tauhid': '1: Alasan tidak jelas atau bersifat umum (misal: ikut-ikutan, dekat rumah). 2: Ada alasan, namun kurang menunjukkan kesadaran akan visi Islami sekolah. 3: Alasan cukup jelas dan menunjukkan keinginan menyekolahkan anak di lingkungan Islami. 4: Alasan selaras dengan tujuan pendidikan Islam dan pembinaan akhlak. 5: Alasan sangat jelas, selaras dengan visi-misi At-Tauhid dalam membentuk generasi Qur\'ani dan berakhlak sunnah.',
+  'Alasan memilih MTA At Tauhid': '1: Alasan tidak jelas atau bersifat umum (misal: ikut-ikutan, dekat rumah). 2: Ada alasan, namun kurang menunjukkan kesadaran akan visi MTA. 3: Alasan cukup jelas dan menunjukkan keinginan menyekolahkan anak di MTA. 4: Alasan selaras dengan tujuan pendidikan khusus Al-Qur\'an. 5: Alasan sangat jelas, selaras dengan visi-misi MTA dalam membentuk generasi hafizh Qur\'an.',
   'Pernyataan sanggup sekolah meski kurikulumnya berat': '1: ragu; 3: sanggup dengan catatan; 5: sanggup tegas.',
   'Komitmen melarang anak menonton tayangan tidak mendidik': '1: Tidak konsisten; anak masih bebas menonton tayangan tidak mendidik. 2: Sudah menasihati, tetapi belum tegas membatasi tontonan anak. 3: Mulai konsisten mengawasi tontonan anak, namun belum sepenuhnya terkontrol. 4: Konsisten mengarahkan anak pada tontonan bermanfaat dan islami. 5: Konsisten dan tegas melarang anak menonton tayangan tidak mendidik, serta menanamkan adab dan nilai syar\'i dalam penggunaan media.',
   'Komitmen tidak memberikan HP kepada anak': '1: tidak komit; 3: komit bersyarat; 5: komit penuh.',
