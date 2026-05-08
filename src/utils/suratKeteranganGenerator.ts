@@ -36,12 +36,11 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   let isSMP = false;
   let isMTA = false;
   let isSDITA = false;
-  let isSMA = false;
 
   if (isSMPFromNoTes) {
     isSMP = true;
   } else if (isSMAFromNoTes) {
-    isSMA = true;
+    // isSMA handled by fallback/default
   } else if (isMTAFromNoTes) {
     isMTA = true;
   } else if (isSDITAFromNoTes) {
@@ -51,10 +50,8 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
     isSMP = lembaga?.id === 'SMPITA';
     isMTA = lembaga?.id === 'MTA';
     isSDITA = lembaga?.id === 'SDITA';
-    isSMA = lembaga?.id === 'SMAITA';
   }
 
-  const lembagaText = isSMP ? 'SMP' : (isMTA ? 'MTA' : (isSDITA ? 'SD' : 'SMA'));
   const lembagaCode = isSMP ? 'SMPITA' : (isMTA ? 'MTA' : (isSDITA ? 'SDITA' : 'SMAITA'));
 
   // Data kepala sekolah
@@ -284,7 +281,7 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
 
     if (isMTA) {
       if (student.data.alumni === 'YA') {
-        const catatan = (student.data.catatanPenguji || '').toUpperCase();
+        const catatan = (student.catatanPenguji || '').toUpperCase();
         // Cek kata kunci di catatan penguji untuk membedakan alumni asrama/non-asrama
         if (catatan.includes('NON ASRAMA') || catatan.includes('NON-ASRAMA')) {
           uangPangkal = 'Rp. 6.950.000,-';
