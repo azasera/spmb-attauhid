@@ -56,7 +56,7 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   const kepalaSekolah = isSMP
     ? { nama: 'Meditoma, S.Pd.', niy: '199405220720181024' }
     : isMTA
-    ? { nama: 'Azali, S.Pd.', niy: '199001151220231161' }
+    ? { nama: 'Azali', niy: '199001151220231161' }
     : { nama: 'Delly Arhadath, S.Pd.', niy: '200001120120231160' };
 
   // Status asrama dari data form siswa
