@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import { Student } from '../types';
 import { lembagaData } from '../data/constants';
-import { LOGO_PONPES_ICT, LOGO_SMP_ATTAUHID, LOGO_SMA_ATTAUHID, LOGO_MTA_ATTAUHID, addLogoPDF } from '../assets/logos/logoConstants';
+import { LOGO_PONPES_ICT, LOGO_SMP_ATTAUHID, LOGO_SMA_ATTAUHID, LOGO_MTA_ATTAUHID, LOGO_SDITA_ATTAUHID, addLogoPDF } from '../assets/logos/logoConstants';
 
 export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   const doc = new jsPDF({
@@ -30,33 +30,40 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   const isSMPFromNoTes = student.noTes.toUpperCase().startsWith('SMP');
   const isSMAFromNoTes = student.noTes.toUpperCase().startsWith('SMA');
   const isMTAFromNoTes = student.noTes.toUpperCase().startsWith('MTA');
+  const isSDITAFromNoTes = student.noTes.toUpperCase().startsWith('SD');
 
   // Prioritaskan deteksi dari nomor tes, fallback ke data lembaga
-  let isSMP: boolean;
-  let isMTA: boolean;
+  let isSMP = false;
+  let isMTA = false;
+  let isSDITA = false;
+  let isSMA = false;
+
   if (isSMPFromNoTes) {
     isSMP = true;
-    isMTA = false;
   } else if (isSMAFromNoTes) {
-    isSMP = false;
-    isMTA = false;
+    isSMA = true;
   } else if (isMTAFromNoTes) {
-    isSMP = false;
     isMTA = true;
+  } else if (isSDITAFromNoTes) {
+    isSDITA = true;
   } else {
     // Fallback ke data lembaga jika nomor tes tidak jelas
     isSMP = lembaga?.id === 'SMPITA';
     isMTA = lembaga?.id === 'MTA';
+    isSDITA = lembaga?.id === 'SDITA';
+    isSMA = lembaga?.id === 'SMAITA';
   }
 
-  const lembagaText = isSMP ? 'SMP' : (isMTA ? 'MTA' : 'SMA');
-  const lembagaCode = isSMP ? 'SMPITA' : (isMTA ? 'MTA' : 'SMAITA');
+  const lembagaText = isSMP ? 'SMP' : (isMTA ? 'MTA' : (isSDITA ? 'SD' : 'SMA'));
+  const lembagaCode = isSMP ? 'SMPITA' : (isMTA ? 'MTA' : (isSDITA ? 'SDITA' : 'SMAITA'));
 
   // Data kepala sekolah
   const kepalaSekolah = isSMP
     ? { nama: 'Meditoma, S.Pd.', niy: '199405220720181024' }
     : isMTA
-    ? { nama: 'Azali', niy: '199001151220231161' }
+    ? { nama: 'Azali', niy: '-' }
+    : isSDITA
+    ? { nama: 'Subrian Muji Putra, S.Pd.', niy: '199407240520221106' }
     : { nama: 'Delly Arhadath, S.Pd.', niy: '200001120120231160' };
 
   // Status asrama dari data form siswa
@@ -97,8 +104,8 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   addLogoPDF(doc, LOGO_PONPES_ICT, 15, 10, 'PONPES');
 
   // Logo Kanan - Berdasarkan deteksi lembaga yang sudah diperbaiki (geser ke atas)
-  const rightLogo = isSMP ? LOGO_SMP_ATTAUHID : (isMTA ? LOGO_MTA_ATTAUHID : LOGO_SMA_ATTAUHID);
-  const rightLogoType = isSMP ? 'SMP' : (isMTA ? 'MTA' : 'SMA');
+  const rightLogo = isSMP ? LOGO_SMP_ATTAUHID : (isMTA ? LOGO_MTA_ATTAUHID : (isSDITA ? LOGO_SDITA_ATTAUHID : LOGO_SMA_ATTAUHID));
+  const rightLogoType = isSMP ? 'SMP' : (isMTA ? 'MTA' : (isSDITA ? 'SDITA' : 'SMA'));
   addLogoPDF(doc, rightLogo, 171, 10, rightLogoType);
 
   // Teks Header
@@ -113,8 +120,8 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   doc.text('Jl. Gerunggang RT 08 RW 03 Kel. Gerunggang Kec. Kepala Tujuh, Kec. Gerunggang, Prov. Bangka Belitung', 105, 36, { align: 'center' });
   
   // Kontak yang berbeda untuk SMP, MTA, dan SMA
-  const telpLembaga = isSMP ? '+62 857-5802-1593' : (isMTA ? '+62 812-9758-5207' : '+62 812-9758-5207');
-  const emailLembaga = isSMP ? 'smpita.attauhid@gmail.com' : (isMTA ? 'mta.attauhid@gmail.com' : 'attauhidsmaita@gmail.com');
+  const telpLembaga = isSMP ? '+62 857-5802-1593' : (isMTA ? '+62 812-9758-5207' : (isSDITA ? '+62 812-3456-7890' : '+62 812-9758-5207'));
+  const emailLembaga = isSMP ? 'smpita.attauhid@gmail.com' : (isMTA ? 'mta.attauhid@gmail.com' : (isSDITA ? 'sdita.attauhid@gmail.com' : 'attauhidsmaita@gmail.com'));
   doc.text(`Telp. ${telpLembaga} e-mail : ${emailLembaga}`, 105, 42, { align: 'center' });
   
   // Nomor/NPSN berbeda untuk SMP, MTA, dan SMA
@@ -123,6 +130,9 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   if (isSMP) {
     // SMP: tampilkan NPSN
     doc.text('NPSN : 70044522', 105, 47, { align: 'center' });
+  } else if (isSDITA) {
+    // SDITA: tampilkan NPSN (jika ada, pakai placeholder dulu)
+    doc.text('NPSN : 70044521', 105, 47, { align: 'center' });
   } else if (isMTA) {
     // MTA: tampilkan nomor khusus MTA
     doc.setFontSize(9);
@@ -154,7 +164,13 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   doc.setFont('helvetica', 'normal');
   let yPos = 85;
 
-  const lembagaFullName = isMTA ? 'Manzhumah Takhoshush Al Qur\'an' : `${lembagaText} Islam Tahfizh Al-Qur'an`;
+  const lembagaFullName = isMTA 
+    ? "Manzhumah Takhoshush Al Qur'an" 
+    : isSDITA 
+    ? "Sekolah Dasar Islam Tahfizh Al Qur'an"
+    : isSMP
+    ? "Sekolah Menengah Pertama Islam Tahfizh Al Qur'an"
+    : "Sekolah Menengah Atas Islam Tahfizh Al Qur'an";
   const pembukaan = [
     `Yang bertanda tangan di bawah ini, Kepala ${lembagaFullName} At-Tauhid`,
     'Pangkalpinang Provinsi Bangka Belitung, menerangkan bahwa:'
@@ -210,8 +226,8 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
     // Redaksi sopan untuk siswa tidak lulus
     const redaksiTidakLulus = [
       'Dengan penuh hormat, kami mengucapkan terima kasih atas partisipasi Bapak/Ibu dan ananda',
-      'yang telah mengikuti proses seleksi SISTEM PENERIMAAN SISWA BARU (SPMB) di SMP Islam',
-      'Tahfizh Al-Qur\'an At-Tauhid Pangkalpinang.',
+      `yang telah mengikuti proses seleksi SISTEM PENERIMAAN SISWA BARU (SPMB) di ${lembagaFullName}`,
+      'At-Tauhid Pangkalpinang.',
       '',
       'Berdasarkan hasil evaluasi seleksi akademik, wawancara, dan tahsin/tahfizh, kami sampaikan',
       'bahwa untuk saat ini ananda belum dapat dinyatakan lulus dalam seleksi penerimaan siswa',
@@ -261,10 +277,45 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
 
     yPos += 8;
 
-    // Biaya berdasarkan asrama/non asrama
-    const uangPangkal = isAsrama ? 'Rp. 12.800.000,-' : 'Rp. 9.800.000,-';
-    const spp = isAsrama ? 'Rp. 1.300.000,-' : 'Rp. 450.000,-';
-    const total = isAsrama ? 'Rp. 14.100.000,-' : 'Rp. 10.250.000,-';
+    // Biaya berdasarkan asrama/non asrama dan lembaga
+    let uangPangkal = '';
+    let spp = '';
+    let totalVal = 0;
+
+    if (isMTA) {
+      if (student.data.alumni === 'YA') {
+        const catatan = (student.data.catatanPenguji || '').toUpperCase();
+        // Cek kata kunci di catatan penguji untuk membedakan alumni asrama/non-asrama
+        if (catatan.includes('NON ASRAMA') || catatan.includes('NON-ASRAMA')) {
+          uangPangkal = 'Rp. 6.950.000,-';
+          totalVal = 6950000 + (isAsrama ? 1300000 : 450000);
+        } else if (catatan.includes('ASRAMA')) {
+          uangPangkal = 'Rp. 3.950.000,-';
+          totalVal = 3950000 + (isAsrama ? 1300000 : 450000);
+        } else {
+          // Default alumni MTA jika tidak ada catatan khusus (asumsi dari non-asrama)
+          uangPangkal = 'Rp. 6.950.000,-';
+          totalVal = 6950000 + (isAsrama ? 1300000 : 450000);
+        }
+      } else {
+        // Calon Santri Baru (Bukan Alumni)
+        uangPangkal = 'Rp. 9.600.000,-';
+        totalVal = 9600000 + (isAsrama ? 1300000 : 450000);
+      }
+      spp = isAsrama ? 'Rp. 1.300.000,-' : 'Rp. 450.000,-';
+    } else if (isSDITA) {
+      uangPangkal = 'Rp. 9.500.000,-'; // Default SDITA
+      spp = 'Rp. 500.000,-';
+      totalVal = 10000000;
+    } else {
+      // SMPITA / SMAITA
+      uangPangkal = isAsrama ? 'Rp. 12.800.000,-' : 'Rp. 9.800.000,-';
+      spp = isAsrama ? 'Rp. 1.300.000,-' : 'Rp. 450.000,-';
+      totalVal = isAsrama ? 14100000 : 10250000;
+    }
+
+    // Format total dengan titik ribuan
+    const total = `Rp. ${totalVal.toLocaleString('id-ID')},-`.replace(/,/g, '.');
 
     // Tabel biaya modern
     const tableX = 20;
