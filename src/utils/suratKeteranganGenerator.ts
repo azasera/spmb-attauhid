@@ -109,23 +109,25 @@ export const generateSuratKeteranganPDF = async (student: Student): Promise<jsPD
   addLogoPDF(doc, rightLogo, 171, 10, rightLogoType);
 
   // Teks Header
-  doc.setFontSize(14);
+  doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
-  doc.text('PONDOK PESANTREN', 105, 15, { align: 'center' });
-  doc.text('ISLAMIC CENTRE AT-TAUHID BANGKA BELITUNG', 105, 22, { align: 'center' });
-  doc.text(`${lembagaCode} AT-TAUHID PANGKALPINANG`, 105, 29, { align: 'center' });
+  doc.text('PONDOK PESANTREN', 105, 16, { align: 'center' });
+  doc.setFontSize(14);
+  doc.text('ISLAMIC CENTRE AT-TAUHID BANGKA BELITUNG', 105, 23, { align: 'center' });
+  doc.setFontSize(13);
+  doc.text(`${lembagaCode} AT-TAUHID PANGKALPINANG`, 105, 30, { align: 'center' });
 
-  doc.setFontSize(9);
+  doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
-  doc.text('Jl. Gerunggang RT 08 RW 03 Kel. Gerunggang Kec. Kepala Tujuh, Kec. Gerunggang, Prov. Bangka Belitung', 105, 36, { align: 'center' });
+  doc.text('Jl. Gerunggang RT 08 RW 03 Kel. Gerunggang Kec. Kepala Tujuh, Kec. Gerunggang, Prov. Bangka Belitung', 105, 37, { align: 'center' });
   
   // Kontak yang berbeda untuk SMP, MTA, dan SMA
   const telpLembaga = isSMP ? '+62 857-5802-1593' : (isMTA ? '+62 812-9758-5207' : (isSDITA ? '+62 812-3456-7890' : '+62 812-9758-5207'));
   const emailLembaga = isSMP ? 'smpita.attauhid@gmail.com' : (isMTA ? 'mta.attauhid@gmail.com' : (isSDITA ? 'sdita.attauhid@gmail.com' : 'attauhidsmaita@gmail.com'));
-  doc.text(`Telp. ${telpLembaga} e-mail : ${emailLembaga}`, 105, 42, { align: 'center' });
+  doc.text(`Telp. ${telpLembaga}   e-mail : ${emailLembaga}`, 105, 42, { align: 'center' });
   
   // Nomor/NPSN berbeda untuk SMP, MTA, dan SMA
-  doc.setFontSize(10);
+  doc.setFontSize(9);
   doc.setFont('helvetica', 'bold');
   if (isSMP) {
     // SMP: tampilkan NPSN
@@ -135,21 +137,21 @@ export const generateSuratKeteranganPDF = async (student: Student): Promise<jsPD
     doc.text('NPSN : 70044521', 105, 47, { align: 'center' });
   } else if (isMTA) {
     // MTA: tampilkan nomor khusus MTA
-    doc.setFontSize(9);
+    doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
     doc.text('NOMOR : 188.5/ 04/ DINDIK. MTA/ DPMPTSP/2023', 105, 47, { align: 'center' });
   } else {
     // SMA: tampilkan nomor khusus (tanpa NPSN)
-    doc.setFontSize(9);
+    doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
     doc.text('NOMOR : 188.4/ 04/ DINDIK. SMA/ DPMPTSP/2023', 105, 47, { align: 'center' });
   }
 
   // Garis pemisah
   doc.setLineWidth(1);
-  doc.line(20, 52, 190, 52); // 210mm - 20mm margin = 190mm
+  doc.line(15, 52, 195, 52); // Lebarkan garis agar sejajar dengan logo
   doc.setLineWidth(0.5);
-  doc.line(20, 54, 190, 54);
+  doc.line(15, 53.5, 195, 53.5);
 
   // Judul Surat
   doc.setFontSize(16);
@@ -282,7 +284,7 @@ export const generateSuratKeteranganPDF = async (student: Student): Promise<jsPD
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.text(`Rincian biaya sesuai status: ${statusAlumni} - ${statusAsrama}`, 20, yPos);
-    yPos += 6;
+    yPos += 3;
     doc.setFont('helvetica', 'normal');
 
     // Get dynamic costs from database
@@ -351,62 +353,21 @@ export const generateSuratKeteranganPDF = async (student: Student): Promise<jsPD
 
   // Penutup dan tanda tangan
   doc.text(`Pangkalpinang, ${tanggalSurat}`, 130, yPos);
-  yPos += 5;
+  yPos += 8;
 
   doc.text('Kepala Sekolah,', 130, yPos);
-  yPos += 5;
-
-  // Area untuk stempel (kotak placeholder)
-  const stempelX = 105;
-  const stempelY = yPos;
-  const stempelWidth = 35;
-  const stempelHeight = 20;
-
-  // Kotak stempel dengan border abu-abu
-  doc.setLineWidth(0.5);
-  doc.setDrawColor(150, 150, 150);
-  doc.rect(stempelX, stempelY, stempelWidth, stempelHeight);
-
-  // Text placeholder stempel
-  doc.setFontSize(7);
-  doc.setTextColor(150, 150, 150);
-  doc.text('STEMPEL', stempelX + stempelWidth / 2, stempelY + stempelHeight / 2 - 1, { align: 'center' });
-  doc.text('SEKOLAH', stempelX + stempelWidth / 2, stempelY + stempelHeight / 2 + 2, { align: 'center' });
-
-  // Reset color
-  doc.setDrawColor(0, 0, 0);
-  doc.setTextColor(0, 0, 0);
-
-  // Area untuk tanda tangan (kotak placeholder)
-  const ttdX = 130;
-  const ttdY = yPos;
-  const ttdWidth = 50;
-  const ttdHeight = 18;
-
-  // Kotak tanda tangan dengan border abu-abu
-  doc.setLineWidth(0.5);
-  doc.setDrawColor(150, 150, 150);
-  doc.rect(ttdX, ttdY, ttdWidth, ttdHeight);
-
-  // Text placeholder tanda tangan
-  doc.setFontSize(7);
-  doc.setTextColor(150, 150, 150);
-  doc.text('TANDA TANGAN', ttdX + ttdWidth / 2, ttdY + ttdHeight / 2, { align: 'center' });
-
-  // Reset color
-  doc.setDrawColor(0, 0, 0);
-  doc.setTextColor(0, 0, 0);
-
-  yPos += 22;
+  
+  // Ruang kosong untuk stempel dan tanda tangan (menggantikan placeholder)
+  yPos += 24;
 
   // Nama dan NIY kepala sekolah
   doc.setFontSize(11);
   doc.setFont('helvetica', 'bold');
-  doc.text(kepalaSekolah.nama, 130, yPos);
+  doc.text(kepalaSekolah.nama, 135, yPos);
   yPos += 6;
   doc.setFont('helvetica', 'normal');
-  doc.text(`NIY. ${kepalaSekolah.niy}`, 130, yPos);
-  yPos += 10; // Kurangi dari 15 ke 10
+  doc.text(`NIY. ${kepalaSekolah.niy}`, 135, yPos);
+  yPos += 12;
 
   // Tembusan (F4 memiliki ruang cukup)
   doc.setFontSize(10);
