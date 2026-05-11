@@ -40,6 +40,19 @@ CREATE TABLE IF NOT EXISTS rubric_guides (
   "updatedBy" TEXT
 );
 
+-- Create costs table for expense management
+CREATE TABLE IF NOT EXISTS costs (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  category TEXT NOT NULL,
+  amount INTEGER NOT NULL CHECK (amount >= 0),
+  description TEXT,
+  lembaga TEXT,
+  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  "createdBy" TEXT NOT NULL
+);
+
 -- Create app_settings table for global application settings
 CREATE TABLE IF NOT EXISTS app_settings (
   key TEXT PRIMARY KEY,
@@ -55,6 +68,9 @@ CREATE INDEX IF NOT EXISTS idx_students_lembaga ON students(lembaga);
 CREATE INDEX IF NOT EXISTS idx_students_status ON students(status);
 CREATE INDEX IF NOT EXISTS idx_students_noTes ON students("noTes");
 CREATE INDEX IF NOT EXISTS idx_rubric_guides_variant ON rubric_guides(variant);
+CREATE INDEX IF NOT EXISTS idx_costs_category ON costs(category);
+CREATE INDEX IF NOT EXISTS idx_costs_lembaga ON costs(lembaga);
+CREATE INDEX IF NOT EXISTS idx_costs_createdAt ON costs("createdAt");
 
 -- Insert default admin user
 INSERT INTO users (id, name, username, password, role, "createdAt")
@@ -65,6 +81,7 @@ ON CONFLICT (id) DO NOTHING;
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE students ENABLE ROW LEVEL SECURITY;
 ALTER TABLE rubric_guides ENABLE ROW LEVEL SECURITY;
+ALTER TABLE costs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE app_settings ENABLE ROW LEVEL SECURITY;
 
 -- Create policies for users table (allow all operations for now)
@@ -88,6 +105,13 @@ CREATE POLICY "Allow all operations on rubric_guides" ON rubric_guides
   USING (true)
   WITH CHECK (true);
 
+-- Create policies for costs table (allow all operations for now)
+DROP POLICY IF EXISTS "Allow all operations on costs" ON costs;
+CREATE POLICY "Allow all operations on costs" ON costs
+  FOR ALL
+  USING (true)
+  WITH CHECK (true);
+
 -- Create policies for app_settings table (allow all operations for now)
 DROP POLICY IF EXISTS "Allow all operations on app_settings" ON app_settings;
 CREATE POLICY "Allow all operations on app_settings" ON app_settings
@@ -99,6 +123,7 @@ CREATE POLICY "Allow all operations on app_settings" ON app_settings
 GRANT ALL ON users TO anon, authenticated;
 GRANT ALL ON students TO anon, authenticated;
 GRANT ALL ON rubric_guides TO anon, authenticated;
+GRANT ALL ON costs TO anon, authenticated;
 GRANT ALL ON app_settings TO anon, authenticated;
 
 -- Upgrade section: tambahkan kolom baru jika tabel sudah ada

@@ -2,10 +2,24 @@ import { LucideIcon } from 'lucide-react';
 
 export type UserRole = 'TU' | 'PENGUJI' | 'ADMIN' | null;
 
-export type View = 'login' | 'dashboard' | 'form' | 'penilaian' | 'detail' | 'admin' | 'backup';
+export type View = 'login' | 'dashboard' | 'form' | 'penilaian' | 'detail' | 'admin' | 'backup' | 'cost-management';
 
 export type StudentStatus = 'BELUM DIUJI' | 'SUDAH DIUJI';
 export type KelulusanStatus = 'LULUS' | 'CADANGAN' | 'TIDAK LULUS';
+
+export interface CostItem {
+  id: string;
+  rowNumber?: string;
+  sequence?: number;
+  name: string;
+  category: string;
+  amount: number;
+  description?: string;
+  lembaga?: string;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+}
 
 export interface FormData {
   namaOrangTua: string;

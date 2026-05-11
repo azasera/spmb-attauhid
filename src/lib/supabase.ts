@@ -10,5 +10,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export const TABLES = {
   USERS: 'users',
   STUDENTS: 'students',
-  RUBRIC_GUIDES: 'rubric_guides'
+  RUBRIC_GUIDES: 'rubric_guides',
+  COSTS: 'costs'
 } as const;

@@ -7,6 +7,7 @@ import { downloadSuratKeterangan } from '../utils/suratKeteranganGenerator';
 import { getTahunAjaranFromDatabase, updateStudentNoTesToCurrentYear, formatTanggalSingkat } from '../utils/helpers';
 import ExportButtons from './ExportButtons';
 import ImportModal from './ImportModal';
+import BiayaPendidikanTable from './BiayaPendidikanTable';
 import { supabase } from '../lib/supabase';
 
 interface DashboardScreenProps {
@@ -56,8 +57,9 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
   onFilterDateToChange,
   onOpenAdmin
 }) => {
-  const [tahunAjaranFromDB, setTahunAjaranFromDB] = useState<string>('');
+  const [tahunAjaranFromDB, setTahunAjaranFromDB] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [showCosts, setShowCosts] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
   const [importLembaga, setImportLembaga] = useState<LembagaData | null>(null);
 
@@ -136,6 +138,15 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               )}
             </div>
             <div className="flex items-center gap-2">
+              {/* Toggle Biaya Pendidikan */}
+              <button
+                onClick={() => setShowCosts(!showCosts)}
+                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:shadow-xl transition-all transform hover:scale-105 font-semibold"
+              >
+                <FileText className="w-5 h-5" />
+                <span className="hidden md:inline">Biaya Pendidikan</span>
+                {showCosts ? '▲' : '▼'}
+              </button>
               {/* Atur Tahun Ajaran (TU Only) */}
               {userRole === 'TU' && (
                 <div className="hidden md:flex items-center gap-2 mr-2">
@@ -205,6 +216,13 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               </button>
             </div>
           </div>
+
+          {/* Collapsible Biaya Pendidikan Section */}
+          {showCosts && (
+            <div className="mt-6 animate-fade-in">
+              <BiayaPendidikanTable viewOnly={true} />
+            </div>
+          )}
 
           {/* Statistik Dashboard - Dikelompokkan per Kategori */}
 

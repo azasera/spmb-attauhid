@@ -14,7 +14,8 @@ import {
   FileText,
   ChevronDown,
   ChevronUp,
-  Database
+  Database,
+  DollarSign
 } from 'lucide-react';
 
 interface AdminScreenProps {
@@ -26,6 +27,7 @@ interface AdminScreenProps {
   onResetPassword: (userId: string, newPassword: string) => Promise<{ success: boolean; message: string }>;
   onBack: () => void;
   onOpenBackup: () => void;
+  onOpenCostManagement: () => void;
   showToast: (message: string, type: 'success' | 'error') => void;
 }
 
@@ -45,6 +47,7 @@ const AdminScreen: React.FC<AdminScreenProps> = ({
   onResetPassword,
   onBack,
   onOpenBackup,
+  onOpenCostManagement,
   showToast
 }) => {
   // Rubric guide editor state
@@ -287,6 +290,13 @@ const AdminScreen: React.FC<AdminScreenProps> = ({
               </div>
             </div>
             <div className="flex gap-3">
+              <button
+                onClick={onOpenCostManagement}
+                className="flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:shadow-2xl transition-all transform hover:scale-105 font-bold"
+              >
+                <DollarSign className="w-5 h-5 mr-2" />
+                Manajemen Biaya
+              </button>
               <button
                 onClick={onOpenBackup}
                 className="flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-2xl transition-all transform hover:scale-105 font-bold"

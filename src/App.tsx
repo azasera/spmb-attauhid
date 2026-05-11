@@ -9,6 +9,7 @@ import FormScreen from './components/FormScreen';
 import PenilaianScreen from './components/PenilaianScreen';
 import AdminScreen from './components/AdminScreen';
 import { BackupScreen } from './components/BackupScreen';
+import BiayaPendidikanTable from './components/BiayaPendidikanTable';
 import Toast from './components/Toast';
 import { View, Petugas } from './types';
 import { backupService } from './utils/backupService';
@@ -95,6 +96,10 @@ const App = () => {
 
   const handleOpenBackup = () => {
     setView('backup');
+  };
+
+  const handleOpenCostManagement = () => {
+    setView('cost-management');
   };
 
   // Initialize backup service
@@ -229,8 +234,32 @@ const App = () => {
           onResetPassword={resetPassword}
           onBack={() => setView('dashboard')}
           onOpenBackup={handleOpenBackup}
+          onOpenCostManagement={handleOpenCostManagement}
           showToast={showToast}
         />
+        {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
+      </>
+    );
+  }
+
+  // Cost Management Screen (Admin Only)
+  if (view === 'cost-management' && currentUser?.role === 'ADMIN') {
+    return (
+      <>
+        <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-4 md:p-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-6 flex items-center justify-between">
+              <button
+                onClick={() => setView('admin')}
+                className="flex items-center px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-all text-gray-700 font-medium"
+              >
+                ← Kembali ke Admin
+              </button>
+              <h1 className="text-2xl font-bold text-green-800">Manajemen Biaya Pendidikan</h1>
+            </div>
+            <BiayaPendidikanTable viewOnly={false} />
+          </div>
+        </div>
         {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
       </>
     );
