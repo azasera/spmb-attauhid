@@ -409,6 +409,9 @@ const CostManagementScreen: React.FC<CostManagementScreenProps> = ({
               <table className="w-full">
               <thead className="bg-gradient-to-r from-green-100 to-emerald-100 border-b-2 border-green-200">
                 <tr>
+                  <th className="px-4 py-4 text-center text-xs font-black text-green-700 uppercase tracking-wider w-[60px] min-w-[50px]">
+                    No
+                  </th>
                   <th className="px-4 py-4 text-left text-xs font-black text-green-700 uppercase tracking-wider w-[280px] min-w-[200px]">
                     Nama Biaya
                   </th>
@@ -435,6 +438,11 @@ const CostManagementScreen: React.FC<CostManagementScreenProps> = ({
               <tbody className="divide-y divide-gray-200">
                 {filteredCosts.map((cost) => (
                   <tr key={cost.id} className="hover:bg-white/50 transition-all group">
+                    <td className="px-4 py-4 text-center whitespace-nowrap">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-700 font-bold text-sm">
+                        {cost.rowNumber || '-'}
+                      </span>
+                    </td>
                     <td className="px-4 py-4">
                       <div className="font-medium text-gray-900 break-words">{cost.name}</div>
                       {cost.description && (

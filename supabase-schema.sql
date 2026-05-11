@@ -43,6 +43,8 @@ CREATE TABLE IF NOT EXISTS rubric_guides (
 -- Create costs table for expense management
 CREATE TABLE IF NOT EXISTS costs (
   id TEXT PRIMARY KEY,
+  "rowNumber" TEXT,
+  sequence REAL,
   name TEXT NOT NULL,
   category TEXT NOT NULL,
   amount INTEGER NOT NULL CHECK (amount >= 0),
