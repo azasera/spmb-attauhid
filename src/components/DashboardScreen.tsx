@@ -137,14 +137,14 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 </div>
               )}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               {/* Toggle Biaya Pendidikan */}
               <button
                 onClick={() => setShowCosts(!showCosts)}
                 className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:shadow-xl transition-all transform hover:scale-105 font-semibold"
               >
                 <FileText className="w-5 h-5" />
-                <span className="hidden md:inline">Biaya Pendidikan</span>
+                <span className="inline">Biaya Pendidikan</span>
                 {showCosts ? '▲' : '▼'}
               </button>
               {/* Atur Tahun Ajaran (TU Only) */}
