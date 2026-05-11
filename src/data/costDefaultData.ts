@@ -142,7 +142,7 @@ export const defaultCostItems: Omit<CostItem, 'createdAt' | 'updatedAt' | 'creat
     sequence: 13,
     category: 'Uang Pangkal Siswa Asrama',
     name: 'Uang Pangkal Siswa Asrama MTA',
-    amount: 12800000,
+    amount: 9700000,
     lembaga: 'MTA'
   },
   {

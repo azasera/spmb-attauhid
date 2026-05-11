@@ -34,6 +34,10 @@ CREATE POLICY "Allow all operations on costs" ON costs
 -- Grant permissions
 GRANT ALL ON costs TO anon, authenticated;
 
+-- Add missing columns if table already exists
+ALTER TABLE costs ADD COLUMN IF NOT EXISTS "rowNumber" TEXT;
+ALTER TABLE costs ADD COLUMN IF NOT EXISTS sequence REAL;
+
 -- Insert default education cost data
 INSERT INTO costs (id, "rowNumber", sequence, name, category, amount, description, lembaga, "createdBy") VALUES
   ('cost-001', '1', 1, 'Pendaftaran Calon Siswa/i TK', 'Pendaftaran Calon Siswa Baru', 100000, NULL, 'TK', 'admin'),
@@ -51,7 +55,7 @@ INSERT INTO costs (id, "rowNumber", sequence, name, category, amount, descriptio
   ('cost-010', '10', 10, 'Uang Pangkal Siswa/i Non Asrama MTA', 'Uang Pangkal Siswa Non Asrama', 9700000, NULL, 'MTA', 'admin'),
   ('cost-011', '11', 11, 'Uang Pangkal Siswa Asrama SMP', 'Uang Pangkal Siswa Asrama', 12800000, NULL, 'SMP', 'admin'),
   ('cost-012', '12', 12, 'Uang Pangkal Siswa Asrama SMA', 'Uang Pangkal Siswa Asrama', 12800000, NULL, 'SMA', 'admin'),
-  ('cost-013', '13', 13, 'Uang Pangkal Siswa Asrama MTA', 'Uang Pangkal Siswa Asrama', 12800000, NULL, 'MTA', 'admin'),
+  ('cost-013', '13', 13, 'Uang Pangkal Siswa Asrama MTA', 'Uang Pangkal Siswa Asrama', 9700000, NULL, 'MTA', 'admin'),
   ('cost-014', '14', 14, 'Uang Pangkal Alumni Siswa SMP Non Asrama ke SMA Asrama', 'Uang Pangkal Alumni SMP At-Tauhid ke SMA At-Tauhid', 8200000, NULL, 'SMP/SMA', 'admin'),
   ('cost-015', '15', 15, 'Uang Pangkal Alumni Siswa SMP Asrama ke SMA Asrama', 'Uang Pangkal Alumni SMP At-Tauhid ke SMA At-Tauhid', 5200000, NULL, 'SMP/SMA', 'admin'),
   ('cost-016', '16', 16, 'Uang Pangkal Alumni Siswa Non Asrama/Asrama ke SMA Non Asrama', 'Uang Pangkal Alumni SMP At-Tauhid ke SMA At-Tauhid', 5200000, NULL, 'SMP/SMA', 'admin'),

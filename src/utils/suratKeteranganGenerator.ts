@@ -2,8 +2,9 @@ import jsPDF from 'jspdf';
 import { Student } from '../types';
 import { lembagaData } from '../data/constants';
 import { LOGO_PONPES_ICT, LOGO_SMP_ATTAUHID, LOGO_SMA_ATTAUHID, LOGO_MTA_ATTAUHID, LOGO_SDITA_ATTAUHID, addLogoPDF } from '../assets/logos/logoConstants';
+import { getStudentCosts, formatCurrency } from './costIntegration';
 
-export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
+export const generateSuratKeteranganPDF = async (student: Student): Promise<jsPDF> => {
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
@@ -65,6 +66,8 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
 
   // Status asrama dari data form siswa
   const isAsrama = student.data.asrama === 'ASRAMA';
+  const statusAsrama = isAsrama ? 'Asrama' : 'Non Asrama';
+  const statusAlumni = student.data.alumni === 'YA' ? 'Alumni' : 'Non Alumni';
 
   // Generate nomor surat berdasarkan nomor tes siswa
   const generateNomorSurat = () => {
@@ -181,7 +184,6 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   yPos += 5;
 
   // Data siswa
-  const statusAsrama = isAsrama ? 'Asrama' : 'Non Asrama';
   const dataLines = [
     { label: 'Nama', value: ': ' + student.data.namaSiswa },
     { label: 'Jenis Kelamin', value: ': ' + (student.data.jenisKelamin || '-') },
@@ -189,6 +191,7 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
     { label: 'Tempat, Tgl. Lahir', value: ': ' + (student.data.tempatLahir || '-') + ', ' + (student.data.tanggalLahir ? formatTanggal(student.data.tanggalLahir) : '-') },
     { label: 'Nama Orangtua', value: ': ' + student.data.namaOrangTua },
     { label: 'Nomor Tes', value: ': ' + student.noTes },
+    { label: 'Status Alumni', value: ': ' + statusAlumni },
     { label: 'Keterangan', value: ': ' + statusAsrama }
   ];
 
@@ -206,11 +209,12 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   if (student.kelulusan === 'LULUS') {
     // Redaksi yang benar untuk siswa lulus
     const redaksiLulus = [
-      'dinyatakan LULUS dari tes seleksi penerimaan peserta didik baru Tahun Ajaran 2026/2027.',
-      'Mohon untuk segera melakukan pembayaran dengan ketentuan : Prosedur daftar ulang',
-      'Adalah dengan membayar kewajiban Uang Pangkal sekurang kurangnya 50% dari total uang',
-      'pangkal ditambah SPP Juli 2026 paling lambat 14 hari setelah surat ini diterbitkan dan',
-      'sisanya dilunasi paling lambat 1 bulan setelahnya.'
+      `dinyatakan LULUS dari tes seleksi penerimaan peserta didik baru Tahun Ajaran 2026/2027.`,
+      `Status: ${statusAlumni} - ${statusAsrama}`,
+      `Mohon untuk segera melakukan pembayaran dengan ketentuan : Prosedur daftar ulang`,
+      `Adalah dengan membayar kewajiban Uang Pangkal sekurang kurangnya 50% dari total uang`,
+      `pangkal ditambah SPP Juli 2026 paling lambat 14 hari setelah surat ini diterbitkan dan`,
+      `sisanya dilunasi paling lambat 1 bulan setelahnya.`
     ];
 
     redaksiLulus.forEach(line => {
@@ -274,45 +278,18 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
 
     yPos += 8;
 
-    // Biaya berdasarkan asrama/non asrama dan lembaga
-    let uangPangkal = '';
-    let spp = '';
-    let totalVal = 0;
+    // Keterangan status untuk biaya
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Rincian biaya sesuai status: ${statusAlumni} - ${statusAsrama}`, 20, yPos);
+    yPos += 6;
+    doc.setFont('helvetica', 'normal');
 
-    if (isMTA) {
-      if (student.data.alumni === 'YA') {
-        const catatan = (student.catatanPenguji || '').toUpperCase();
-        // Cek kata kunci di catatan penguji untuk membedakan alumni asrama/non-asrama
-        if (catatan.includes('NON ASRAMA') || catatan.includes('NON-ASRAMA')) {
-          uangPangkal = 'Rp. 6.950.000,-';
-          totalVal = 6950000 + (isAsrama ? 1300000 : 450000);
-        } else if (catatan.includes('ASRAMA')) {
-          uangPangkal = 'Rp. 3.950.000,-';
-          totalVal = 3950000 + (isAsrama ? 1300000 : 450000);
-        } else {
-          // Default alumni MTA jika tidak ada catatan khusus (asumsi dari non-asrama)
-          uangPangkal = 'Rp. 6.950.000,-';
-          totalVal = 6950000 + (isAsrama ? 1300000 : 450000);
-        }
-      } else {
-        // Calon Santri Baru (Bukan Alumni)
-        uangPangkal = 'Rp. 9.600.000,-';
-        totalVal = 9600000 + (isAsrama ? 1300000 : 450000);
-      }
-      spp = isAsrama ? 'Rp. 1.300.000,-' : 'Rp. 450.000,-';
-    } else if (isSDITA) {
-      uangPangkal = 'Rp. 9.500.000,-'; // Default SDITA
-      spp = 'Rp. 500.000,-';
-      totalVal = 10000000;
-    } else {
-      // SMPITA / SMAITA
-      uangPangkal = isAsrama ? 'Rp. 12.800.000,-' : 'Rp. 9.800.000,-';
-      spp = isAsrama ? 'Rp. 1.300.000,-' : 'Rp. 450.000,-';
-      totalVal = isAsrama ? 14100000 : 10250000;
-    }
-
-    // Format total dengan titik ribuan
-    const total = `Rp. ${totalVal.toLocaleString('id-ID')},-`.replace(/,/g, '.');
+    // Get dynamic costs from database
+    const studentCosts = await getStudentCosts(student);
+    const uangPangkal = formatCurrency(studentCosts.uangPangkal);
+    const spp = formatCurrency(studentCosts.spp);
+    const total = formatCurrency(studentCosts.total);
 
     // Tabel biaya modern
     const tableX = 20;
@@ -450,13 +427,23 @@ export const generateSuratKeteranganPDF = (student: Student): jsPDF => {
   return doc;
 };
 
-export const downloadSuratKeterangan = (student: Student) => {
-  const doc = generateSuratKeteranganPDF(student);
-  const filename = `Surat_Keterangan_${student.noTes}_${student.data.namaSiswa.replace(/\s+/g, '_')}.pdf`;
-  doc.save(filename);
+export const downloadSuratKeterangan = async (student: Student) => {
+  try {
+    const doc = await generateSuratKeteranganPDF(student);
+    const filename = `Surat_Keterangan_${student.noTes}_${student.data.namaSiswa.replace(/\s+/g, '_')}.pdf`;
+    doc.save(filename);
+  } catch (error) {
+    console.error('Error generating graduation certificate:', error);
+    alert('Terjadi kesalahan saat membuat surat keterangan. Silakan coba lagi.');
+  }
 };
 
-export const getSuratKeteranganBlob = (student: Student): Blob => {
-  const doc = generateSuratKeteranganPDF(student);
-  return doc.output('blob');
+export const getSuratKeteranganBlob = async (student: Student): Promise<Blob> => {
+  try {
+    const doc = await generateSuratKeteranganPDF(student);
+    return doc.output('blob');
+  } catch (error) {
+    console.error('Error generating graduation certificate blob:', error);
+    throw error;
+  }
 };

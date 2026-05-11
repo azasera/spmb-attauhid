@@ -637,8 +637,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                           </div>
                         </div>
 
-                        {/* Petugas TU dan Status Asrama */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600 mb-3">
+                        {/* Petugas TU, Status Asrama, dan Status Alumni */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm text-gray-600 mb-3">
                           {student.data.petugas && (
                             <div className="flex items-center gap-2">
                               <UserIcon className="w-4 h-4 text-emerald-600" />
@@ -648,9 +648,13 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                           {student.data.asrama && (
                             <div className="flex items-center gap-2">
                               <UserCheck className="w-4 h-4 text-blue-600" />
-                              <span>Status: {student.data.asrama}</span>
+                              <span>Asrama: {student.data.asrama}</span>
                             </div>
                           )}
+                          <div className="flex items-center gap-2">
+                            <UserCheck className="w-4 h-4 text-purple-600" />
+                            <span>Alumni: {student.data.alumni === 'YA' ? 'Ya' : 'Tidak'}</span>
+                          </div>
                         </div>
 
                         {/* Informasi Penguji dan Nilai */}

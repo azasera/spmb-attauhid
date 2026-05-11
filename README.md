@@ -40,11 +40,12 @@ Sistem Penerimaan Murid Baru untuk Pondok Pesantren IC At Tauhid, Bangka Belitun
 - Perhitungan nilai akhir otomatis
 - Status kelulusan (LULUS/CADANGAN/TIDAK LULUS)
 
-### 📄 Kartu Peserta & Export
-- **Download PDF**: Download kartu peserta dalam format PDF yang profesional
-- **Kirim via WhatsApp**: Kirim informasi jadwal tes langsung ke nomor WhatsApp orang tua
-- **Export Excel**: Export semua data ke Excel
-- **Surat Keterangan**: Generate surat keterangan otomatis
+### 🔄 Sinkronisasi Biaya & Surat Keterangan ⭐ NEW
+- **Real-time Sync**: Surat keterangan selalu menggunakan biaya terbaru
+- **Smart Cost Detection**: Otomatis menentukan biaya berdasarkan lembaga & status asrama
+- **Alumni Support**: Penanganan khusus biaya alumni MTA
+- **Error Resilient**: Fallback system jika database unavailable
+- **Currency Formatting**: Format mata uang Indonesia yang konsisten
 
 ### 💾 Backup & Restore
 - **Auto Backup**: Backup otomatis setiap 24 jam
