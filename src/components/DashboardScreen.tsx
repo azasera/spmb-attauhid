@@ -10,6 +10,19 @@ import ImportModal from './ImportModal';
 import BiayaPendidikanTable from './BiayaPendidikanTable';
 import { supabase } from '../lib/supabase';
 
+// Helper function to normalize penguji names
+const normalizePenguji = (name: string | undefined): string => {
+  if (!name) return 'Tidak Diketahui';
+  const normalized = name.trim();
+  if (normalized === 'Delly' || normalized === 'Delly Arhadhat' || normalized === 'Delly Arhadath') {
+    return 'Delly Arhadath';
+  }
+  if (normalized === 'Herianto') {
+    return 'Heri Ferbrianto';
+  }
+  return normalized;
+};
+
 interface DashboardScreenProps {
   userRole: UserRole;
   currentUser: User | null;
@@ -373,7 +386,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             const pengujiStats = filteredStudents
               .filter(s => s.status === 'SUDAH DIUJI' && s.penguji)
               .reduce((acc, student) => {
-                const penguji = student.penguji || 'Tidak Diketahui';
+                const penguji = normalizePenguji(student.penguji);
                 if (!acc[penguji]) {
                   acc[penguji] = 0;
                 }
@@ -698,7 +711,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                                     <UserCheck className="w-4 h-4 text-indigo-500" />
                                     <span>Diuji oleh:</span>
                                   </div>
-                                  <span className="font-bold text-indigo-700">{student.penguji}</span>
+                                  <span className="font-bold text-indigo-700">{normalizePenguji(student.penguji)}</span>
                                 </div>
                               )}
                               {student.nilaiAkhir !== undefined && (
