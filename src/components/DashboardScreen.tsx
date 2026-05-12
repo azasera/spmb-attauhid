@@ -636,17 +636,17 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 const Icon = lembaga?.icon || School;
 
                 return (
-                  <div key={student.id} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:bg-slate-50/30 transition-all group animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
-                    <div className="flex items-start gap-4">
-                      <div className={`hidden md:flex items-center justify-center w-14 h-14 bg-gradient-to-br ${lembaga?.color} rounded-xl flex-shrink-0 shadow-sm ring-1 ring-slate-200/70 group-hover:scale-110 transition-transform`}>
-                        <Icon className="w-7 h-7 text-white" />
+                  <div key={student.id} className="bg-white border border-slate-200 rounded-2xl p-4 md:p-6 shadow-sm hover:shadow-md hover:bg-slate-50/30 transition-all group animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+                    <div className="flex items-start gap-3 md:gap-4">
+                      <div className={`hidden md:flex items-center justify-center w-12 md:w-14 h-12 md:h-14 bg-gradient-to-br ${lembaga?.color} rounded-xl flex-shrink-0 shadow-sm ring-1 ring-slate-200/70 group-hover:scale-110 transition-transform`}>
+                        <Icon className="w-6 md:w-7 h-6 md:h-7 text-white" />
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2 mb-3">
+                        <div className="flex items-start justify-between gap-2 mb-2 md:mb-3">
                           <div>
-                            <h3 className="font-black text-slate-800 text-xl mb-1">{student.data.namaSiswa}</h3>
-                            <p className="text-sm text-slate-500 font-medium">👨‍👩‍👦 {student.data.namaOrangTua}</p>
+                            <h3 className="font-black text-slate-800 text-lg md:text-xl mb-1">{student.data.namaSiswa}</h3>
+                            <p className="text-xs md:text-sm text-slate-500 font-medium">👨‍👩‍👦 {student.data.namaOrangTua}</p>
                           </div>
                           <div className="flex flex-col gap-2 items-end">
                             <span className={`px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm flex items-center gap-1.5 ${student.status === 'SUDAH DIUJI'
@@ -670,54 +670,54 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                           </div>
                         </div>
 
-                        <div className="flex flex-wrap gap-2 text-xs mb-4">
-                          <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-600 rounded-lg text-white shadow-sm">
-                            <FileText className="w-4 h-4 text-white/90" />
+                        <div className="flex flex-wrap gap-1.5 text-[10px] md:text-xs mb-2 md:mb-4">
+                          <span className="inline-flex items-center gap-1.5 px-2 md:px-3 py-1 md:py-1.5 bg-emerald-600 rounded-lg text-white shadow-sm">
+                            <FileText className="w-3 h-3 md:w-4 md:h-4 text-white/90" />
                             <span className="font-semibold">{student.noTes}</span>
                           </span>
-                          <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 rounded-lg text-white shadow-sm">
-                            <School className="w-4 h-4 text-white/90" />
+                          <span className="inline-flex items-center gap-1.5 px-2 md:px-3 py-1 md:py-1.5 bg-blue-600 rounded-lg text-white shadow-sm">
+                            <School className="w-3 h-3 md:w-4 md:h-4 text-white/90" />
                             <span className="font-semibold">{lembaga?.name}</span>
                           </span>
-                          <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-600 rounded-lg text-white shadow-sm">
-                            <Calendar className="w-4 h-4 text-white/90" />
+                          <span className="inline-flex items-center gap-1.5 px-2 md:px-3 py-1 md:py-1.5 bg-amber-600 rounded-lg text-white shadow-sm">
+                            <Calendar className="w-3 h-3 md:w-4 md:h-4 text-white/90" />
                             <span className="font-semibold">{formatTanggalSingkat(student.data.tanggalTes)} • {student.data.jamTes}</span>
                           </span>
                           {student.data.petugas && (
-                            <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-600 rounded-lg text-white shadow-sm">
-                              <UserIcon className="w-4 h-4 text-white/90" />
+                            <span className="inline-flex items-center gap-1.5 px-2 md:px-3 py-1 md:py-1.5 bg-indigo-600 rounded-lg text-white shadow-sm">
+                              <UserIcon className="w-3 h-3 md:w-4 md:h-4 text-white/90" />
                               <span>Petugas: <span className="font-semibold">{student.data.petugas}</span></span>
                             </span>
                           )}
                           {student.data.asrama && (
-                            <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-violet-600 rounded-lg text-white shadow-sm">
-                              <UserCheck className="w-4 h-4 text-white/90" />
+                            <span className="inline-flex items-center gap-1.5 px-2 md:px-3 py-1 md:py-1.5 bg-violet-600 rounded-lg text-white shadow-sm">
+                              <UserCheck className="w-3 h-3 md:w-4 md:h-4 text-white/90" />
                               <span>Asrama: <span className="font-semibold">{student.data.asrama}</span></span>
                             </span>
                           )}
-                          <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-rose-600 rounded-lg text-white shadow-sm">
-                            <UserCheck className="w-4 h-4 text-white/90" />
+                          <span className="inline-flex items-center gap-1.5 px-2 md:px-3 py-1 md:py-1.5 bg-rose-600 rounded-lg text-white shadow-sm">
+                            <UserCheck className="w-3 h-3 md:w-4 md:h-4 text-white/90" />
                             <span>Alumni: <span className="font-semibold">{student.data.alumni === 'YA' ? 'Ya' : 'Tidak'}</span></span>
                           </span>
                         </div>
 
                         {/* Informasi Penguji dan Nilai */}
                         {student.status === 'SUDAH DIUJI' && (
-                          <div className="mb-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div className="mb-3 md:mb-4 p-3 md:p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
                               {student.penguji && (
-                                <div className="flex items-center gap-2 text-sm">
-                                  <div className="flex items-center gap-2 text-slate-600">
-                                    <UserCheck className="w-4 h-4 text-indigo-500" />
+                                <div className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm">
+                                  <div className="flex items-center gap-1.5 md:gap-2 text-slate-600">
+                                    <UserCheck className="w-3 h-3 md:w-4 md:h-4 text-indigo-500" />
                                     <span>Diuji oleh:</span>
                                   </div>
                                   <span className="font-bold text-indigo-700">{normalizePenguji(student.penguji)}</span>
                                 </div>
                               )}
                               {student.nilaiAkhir !== undefined && (
-                                <div className="flex items-center gap-2 text-sm">
-                                  <div className="flex items-center gap-2 text-slate-600">
-                                    <FileText className="w-4 h-4 text-purple-500" />
+                                <div className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm">
+                                  <div className="flex items-center gap-1.5 md:gap-2 text-slate-600">
+                                    <FileText className="w-3 h-3 md:w-4 md:h-4 text-purple-500" />
                                     <span>Nilai Akhir:</span>
                                   </div>
                                   <span className="font-black text-purple-700">{student.nilaiAkhir}</span>
@@ -727,39 +727,39 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                           </div>
                         )}
 
-                        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-slate-100 justify-start md:justify-end">
+                        <div className="flex flex-wrap gap-1.5 md:gap-2 mt-3 md:mt-4 pt-3 md:pt-4 border-t border-slate-100 justify-start md:justify-end">
                           {userRole === 'TU' && (
                             <>
                               <button
                                 onClick={() => onEditStudent(student)}
-                                className="flex items-center gap-1.5 px-3 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 rounded-xl transition-all text-sm font-semibold"
+                                className="flex items-center gap-1.5 px-2 md:px-3 py-1.5 md:py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 rounded-xl transition-all text-xs md:text-sm font-semibold"
                               >
-                                <Edit className="w-4 h-4" />
-                                Edit
+                                <Edit className="w-3 h-3 md:w-4 md:h-4" />
+                                <span className="hidden sm:inline">Edit</span>
                               </button>
                               <button
                                 onClick={() => onDeleteStudent(student.id)}
-                                className="flex items-center gap-1.5 px-3 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 rounded-xl transition-all text-sm font-semibold"
+                                className="flex items-center gap-1.5 px-2 md:px-3 py-1.5 md:py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 rounded-xl transition-all text-xs md:text-sm font-semibold"
                               >
-                                <Trash2 className="w-4 h-4" />
-                                Hapus
+                                <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
+                                <span className="hidden sm:inline">Hapus</span>
                               </button>
                             </>
                           )}
                           {userRole === 'PENGUJI' && (
                             <button
                               onClick={() => onStartPenilaian(student)}
-                              className="flex items-center gap-1.5 px-4 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded-xl transition-all text-sm font-bold"
+                              className="flex items-center gap-1.5 px-2 md:px-4 py-1.5 md:py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded-xl transition-all text-xs md:text-sm font-bold"
                             >
                               {student.status === 'SUDAH DIUJI' ? (
                                 <>
-                                  <Eye className="w-4 h-4" />
-                                  Lihat Penilaian
+                                  <Eye className="w-3 h-3 md:w-4 md:h-4" />
+                                  <span className="hidden sm:inline">Lihat Penilaian</span>
                                 </>
                               ) : (
                                 <>
-                                  <UserCheck className="w-4 h-4" />
-                                  Mulai TES
+                                  <UserCheck className="w-3 h-3 md:w-4 md:h-4" />
+                                  <span className="hidden sm:inline">Mulai TES</span>
                                 </>
                               )}
                             </button>
@@ -769,41 +769,41 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                             <>
                               <button
                                 onClick={async () => { await exportStudentToPDF(student, lembagaData); }}
-                                className="flex items-center gap-1.5 px-3 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-xl transition-all text-sm font-semibold"
+                                className="flex items-center gap-1.5 px-2 md:px-3 py-1.5 md:py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-xl transition-all text-xs md:text-sm font-semibold"
                                 aria-label="Download Hasil Tes PDF"
                                 title="Export Hasil Tes PDF"
                               >
-                                <FileText className="w-4 h-4" />
-                                Hasil PDF
+                                <FileText className="w-3 h-3 md:w-4 md:h-4" />
+                                <span className="hidden sm:inline">Hasil PDF</span>
                               </button>
                               {student.kelulusan && (userRole === 'TU' || userRole === 'ADMIN') && (
                                 <button
                                   onClick={() => downloadSuratKeterangan(student)}
-                                  className="flex items-center gap-1.5 px-3 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded-xl transition-all text-sm font-semibold"
+                                  className="flex items-center gap-1.5 px-2 md:px-3 py-1.5 md:py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded-xl transition-all text-xs md:text-sm font-semibold"
                                   aria-label="Download Surat Keterangan"
                                   title="Download Surat Keterangan Lulus/Tidak Lulus"
                                 >
-                                  <FileText className="w-4 h-4" />
-                                  Surat Keterangan
+                                  <FileText className="w-3 h-3 md:w-4 md:h-4" />
+                                  <span className="hidden sm:inline">Surat Keterangan</span>
                                 </button>
                               )}
                             </>
                           )}
                           <button
                             onClick={() => downloadKartuPeserta(student)}
-                            className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 rounded-xl transition-all text-sm font-semibold"
+                            className="flex items-center gap-1.5 px-2 md:px-3 py-1.5 md:py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 rounded-xl transition-all text-xs md:text-sm font-semibold"
                             aria-label="Download Kartu Peserta PDF"
                           >
-                            <FileText className="w-4 h-4" />
-                            Kartu
+                            <FileText className="w-3 h-3 md:w-4 md:h-4" />
+                            <span className="hidden sm:inline">Kartu</span>
                           </button>
                           <button
                             onClick={() => sendViaWhatsApp(student)}
-                            className="flex items-center gap-1.5 px-3 py-2 bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 rounded-xl transition-all text-sm font-semibold"
+                            className="flex items-center gap-1.5 px-2 md:px-3 py-1.5 md:py-2 bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 rounded-xl transition-all text-xs md:text-sm font-semibold"
                             aria-label="Kirim WhatsApp ke Orang Tua"
                           >
-                            <MessageCircle className="w-4 h-4" />
-                            WA
+                            <MessageCircle className="w-3 h-3 md:w-4 md:h-4" />
+                            <span className="hidden sm:inline">WA</span>
                           </button>
                         </div>
                       </div>
