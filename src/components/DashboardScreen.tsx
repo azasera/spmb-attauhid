@@ -109,29 +109,29 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
     }
   };
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-500 via-teal-400 to-blue-500 relative overflow-hidden">
-      {/* Animated background */}
+    <div className="min-h-screen bg-slate-50 relative overflow-hidden font-sans text-slate-800">
+      {/* Modern subtle background pattern/gradient */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-10 right-10 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-10 left-10 w-80 h-80 bg-emerald-300/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-100 rounded-full blur-3xl opacity-50"></div>
+        <div className="absolute top-1/2 -left-24 w-72 h-72 bg-blue-100 rounded-full blur-3xl opacity-50"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-6 relative z-10">
         {/* Header */}
-        <div className="glass rounded-3xl shadow-2xl p-4 md:p-6 mb-6 animate-fade-in hover-lift">
-          <div className="flex items-center justify-between mb-4">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 md:p-6 mb-6 animate-fade-in relative z-10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-emerald-700 to-teal-700 bg-clip-text text-transparent">
+              <h1 className="text-2xl md:text-3xl font-bold text-slate-800">
                 Dashboard {userRole === 'TU' ? 'Tata Usaha' : userRole === 'PENGUJI' ? 'Penguji' : 'Administrator'}
               </h1>
-              <p className="text-gray-700 font-medium">SPMB Ponpes IC At Tauhid</p>
+              <p className="text-slate-500 font-medium">SPMB Ponpes IC At Tauhid</p>
               {currentUser && (
                 <div className="flex items-center gap-2 mt-3">
-                  <div className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-1.5 rounded-full shadow-lg">
-                    <UserIcon className="w-4 h-4 text-white" />
-                    <span className="text-sm font-bold text-white">{currentUser.name}</span>
+                  <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 px-4 py-1.5 rounded-full">
+                    <UserIcon className="w-4 h-4 text-emerald-600" />
+                    <span className="text-sm font-bold text-emerald-700">{currentUser.name}</span>
                   </div>
-                  <span className="text-xs font-semibold text-gray-600 bg-white px-2 py-1 rounded-full">
+                  <span className="text-xs font-semibold text-slate-600 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-full">
                     {currentUser.role}
                   </span>
                 </div>
@@ -141,7 +141,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               {/* Toggle Biaya Pendidikan */}
               <button
                 onClick={() => setShowCosts(!showCosts)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:shadow-xl transition-all transform hover:scale-105 font-semibold"
+                className="flex items-center gap-2 px-4 py-2.5 bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 rounded-xl transition-all font-semibold"
               >
                 <FileText className="w-5 h-5" />
                 <span className="inline">Biaya Pendidikan</span>
@@ -150,7 +150,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               {/* Atur Tahun Ajaran (TU Only) */}
               {userRole === 'TU' && (
                 <div className="hidden md:flex items-center gap-2 mr-2">
-                  <label htmlFor="tahunAjaran" className="text-sm text-gray-700">Tahun Ajaran</label>
+                  <label htmlFor="tahunAjaran" className="text-sm text-slate-600 font-medium">Tahun Ajaran</label>
                   <input
                     id="tahunAjaran"
                     type="text"
@@ -170,9 +170,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
                           if (error) {
                             console.warn('Gagal menyimpan Tahun Ajaran ke database:', error);
-                            // Toast disediakan dari App; opsional untuk production build
                           } else {
-                            // Update state setelah berhasil save
                             setTahunAjaranFromDB(v);
                           }
                         } catch (err) {
@@ -180,18 +178,16 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                         }
 
                         setTimeout(() => window.location.reload(), 1000);
-                      } else if (v !== '') {
-                        // noop: format invalid
                       }
                     }}
                     placeholder="2627"
-                    className="w-20 px-2 py-1 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-100 focus:border-emerald-400 text-sm"
+                    className="w-20 px-2 py-1.5 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-100 focus:border-emerald-400 text-sm font-medium"
                     title="Format 4 digit, mis. 2627"
                   />
                   <button
                     onClick={handleSyncTahunAjaran}
                     disabled={isSyncing}
-                    className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-3 py-1.5 text-xs bg-blue-50 text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors font-medium disabled:opacity-50"
                     title="Sync nomor tes siswa dengan tahun ajaran aktif"
                   >
                     {isSyncing ? '⏳' : '🔄'} Sync
@@ -201,7 +197,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               {currentUser?.role === 'ADMIN' && (
                 <button
                   onClick={onOpenAdmin}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:shadow-xl transition-all transform hover:scale-105 font-semibold"
+                  className="flex items-center gap-2 px-4 py-2.5 bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 rounded-xl transition-all font-semibold"
                 >
                   <Settings className="w-5 h-5" />
                   <span className="hidden md:inline">Kelola User</span>
@@ -209,7 +205,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               )}
               <button
                 onClick={onLogout}
-                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-xl hover:shadow-xl transition-all transform hover:scale-105 font-semibold"
+                className="flex items-center gap-2 px-4 py-2.5 bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 rounded-xl transition-all font-semibold"
               >
                 <LogOut className="w-5 h-5" />
                 <span className="hidden md:inline">Keluar</span>
@@ -227,145 +223,145 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           {/* Statistik Dashboard - Dikelompokkan per Kategori */}
 
           {/* 1. Statistik Umum */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold text-blue-900 mb-3 drop-shadow-lg flex items-center gap-2">
-              📊 Statistik Umum
+          <div className="mb-8 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5">
+            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <span className="text-blue-500">📊</span> Statistik Umum
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-5 rounded-2xl shadow-lg hover-lift transform transition-all">
-                <div className="text-white/90 text-sm font-semibold mb-1">
+              <div className="bg-gradient-to-br from-white to-blue-50/70 border border-slate-200 border-l-4 border-l-blue-500 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                <div className="text-blue-700 text-sm font-semibold mb-2">
                   {filterLembaga === 'ALL' ? 'Total Pendaftar' : `Pendaftar ${lembagaData.find(l => l.id === filterLembaga)?.name || 'Lembaga'}`}
                 </div>
-                <div className="text-3xl font-black text-white">{filteredStudents.length}</div>
-                <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
-                  <div className="h-full bg-white/80 rounded-full" style={{ width: '100%' }}></div>
+                <div className="text-3xl font-black text-blue-900">{filteredStudents.length}</div>
+                <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-blue-500 rounded-full" style={{ width: '100%' }}></div>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-5 rounded-2xl shadow-lg hover-lift transform transition-all">
-                <div className="text-white/90 text-sm font-semibold mb-1">Sudah Diuji</div>
-                <div className="text-3xl font-black text-white">
+              <div className="bg-gradient-to-br from-white to-emerald-50/70 border border-slate-200 border-l-4 border-l-emerald-500 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                <div className="text-emerald-700 text-sm font-semibold mb-2">Sudah Diuji</div>
+                <div className="text-3xl font-black text-emerald-900">
                   {filteredStudents.filter(s => s.status === 'SUDAH DIUJI').length}
                 </div>
-                <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
-                  <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.status === 'SUDAH DIUJI').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
+                <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.status === 'SUDAH DIUJI').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-orange-500 to-amber-600 p-5 rounded-2xl shadow-lg hover-lift transform transition-all">
-                <div className="text-white/90 text-sm font-semibold mb-1">Belum Diuji</div>
-                <div className="text-3xl font-black text-white">
+              <div className="bg-gradient-to-br from-white to-amber-50/70 border border-slate-200 border-l-4 border-l-amber-500 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                <div className="text-amber-700 text-sm font-semibold mb-2">Belum Diuji</div>
+                <div className="text-3xl font-black text-amber-900">
                   {filteredStudents.filter(s => s.status === 'BELUM DIUJI').length}
                 </div>
-                <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
-                  <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.status === 'BELUM DIUJI').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
+                <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-amber-500 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.status === 'BELUM DIUJI').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-5 rounded-2xl shadow-lg hover-lift transform transition-all">
-                <div className="text-white/90 text-sm font-semibold mb-1">Tes Hari Ini</div>
-                <div className="text-3xl font-black text-white">
+              <div className="bg-gradient-to-br from-white to-purple-50/70 border border-slate-200 border-l-4 border-l-purple-500 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                <div className="text-purple-700 text-sm font-semibold mb-2">Tes Hari Ini</div>
+                <div className="text-3xl font-black text-purple-900">
                   {filteredStudents.filter(s => s.data.tanggalTes === new Date().toISOString().split('T')[0]).length}
                 </div>
-                <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
-                  <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.data.tanggalTes === new Date().toISOString().split('T')[0]).length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
+                <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-purple-500 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.data.tanggalTes === new Date().toISOString().split('T')[0]).length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* 2. Statistik Kelulusan */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold text-blue-900 mb-3 drop-shadow-lg flex items-center gap-2">
-              🎓 Statistik Kelulusan
+          <div className="mb-8 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5">
+            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <span className="text-emerald-500">🎓</span> Statistik Kelulusan
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <div className="bg-gradient-to-br from-emerald-500 to-green-600 p-5 rounded-2xl shadow-lg hover-lift transform transition-all">
-                <div className="text-white/90 text-sm font-semibold mb-1">✅ Lulus</div>
-                <div className="text-3xl font-black text-white">
+              <div className="bg-gradient-to-br from-white to-emerald-50/70 border border-slate-200 border-l-4 border-l-emerald-500 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                <div className="text-emerald-700 text-sm font-semibold mb-2">✅ Lulus</div>
+                <div className="text-3xl font-black text-emerald-900">
                   {filteredStudents.filter(s => s.kelulusan === 'LULUS').length}
                 </div>
-                <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
-                  <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.kelulusan === 'LULUS').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
+                <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.kelulusan === 'LULUS').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-yellow-500 to-amber-600 p-5 rounded-2xl shadow-lg hover-lift transform transition-all">
-                <div className="text-white/90 text-sm font-semibold mb-1 flex items-center gap-2">
+              <div className="bg-gradient-to-br from-white to-amber-50/70 border border-slate-200 border-l-4 border-l-amber-500 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                <div className="text-amber-700 text-sm font-semibold mb-2 flex items-center gap-2">
                   <span>⚠️</span> Cadangan
                 </div>
-                <div className="text-3xl font-black text-white">
+                <div className="text-3xl font-black text-amber-900">
                   {filteredStudents.filter(s => s.kelulusan === 'CADANGAN').length}
                 </div>
-                <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
-                  <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.kelulusan === 'CADANGAN').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
+                <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-amber-500 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.kelulusan === 'CADANGAN').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-red-500 to-rose-600 p-5 rounded-2xl shadow-lg hover-lift transform transition-all">
-                <div className="text-white/90 text-sm font-semibold mb-1">❌ Tidak Lulus</div>
-                <div className="text-3xl font-black text-white">
+              <div className="bg-gradient-to-br from-white to-rose-50/70 border border-slate-200 border-l-4 border-l-rose-500 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                <div className="text-rose-700 text-sm font-semibold mb-2">❌ Tidak Lulus</div>
+                <div className="text-3xl font-black text-rose-900">
                   {filteredStudents.filter(s => s.kelulusan === 'TIDAK LULUS').length}
                 </div>
-                <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
-                  <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.kelulusan === 'TIDAK LULUS').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
+                <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-rose-500 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.kelulusan === 'TIDAK LULUS').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* 3. Statistik Jenis Kelamin */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold text-blue-900 mb-3 drop-shadow-lg flex items-center gap-2">
-              👥 Statistik Jenis Kelamin
+          <div className="mb-8 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5">
+            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <span className="text-cyan-500">👥</span> Statistik Jenis Kelamin
             </h3>
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-5 rounded-2xl shadow-lg hover-lift transform transition-all">
-                <div className="text-white/90 text-sm font-semibold mb-1 flex items-center gap-2">
+              <div className="bg-gradient-to-br from-white to-blue-50/70 border border-slate-200 border-l-4 border-l-blue-500 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                <div className="text-blue-700 text-sm font-semibold mb-2 flex items-center gap-2">
                   <span>👨</span> Laki-laki
                 </div>
-                <div className="text-3xl font-black text-white">
+                <div className="text-3xl font-black text-blue-900">
                   {filteredStudents.filter(s => s.data.jenisKelamin === 'Laki-laki').length}
                 </div>
-                <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
-                  <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.data.jenisKelamin === 'Laki-laki').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
+                <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-blue-500 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.data.jenisKelamin === 'Laki-laki').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-pink-500 to-rose-600 p-5 rounded-2xl shadow-lg hover-lift transform transition-all">
-                <div className="text-white/90 text-sm font-semibold mb-1 flex items-center gap-2">
+              <div className="bg-gradient-to-br from-white to-pink-50/70 border border-slate-200 border-l-4 border-l-pink-500 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                <div className="text-pink-700 text-sm font-semibold mb-2 flex items-center gap-2">
                   <span>👩</span> Perempuan
                 </div>
-                <div className="text-3xl font-black text-white">
+                <div className="text-3xl font-black text-pink-900">
                   {filteredStudents.filter(s => s.data.jenisKelamin === 'Perempuan').length}
                 </div>
-                <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
-                  <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.data.jenisKelamin === 'Perempuan').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
+                <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-pink-500 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.data.jenisKelamin === 'Perempuan').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* 4. Statistik Status Asrama */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold text-blue-900 mb-3 drop-shadow-lg flex items-center gap-2">
-              🏠 Statistik Status Asrama
+          <div className="mb-8 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5">
+            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <span className="text-violet-500">🏠</span> Statistik Status Asrama
             </h3>
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gradient-to-br from-violet-500 to-purple-600 p-5 rounded-2xl shadow-lg hover-lift transform transition-all">
-                <div className="text-white/90 text-sm font-semibold mb-1 flex items-center gap-2">
+              <div className="bg-gradient-to-br from-white to-violet-50/70 border border-slate-200 border-l-4 border-l-violet-500 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                <div className="text-violet-700 text-sm font-semibold mb-2 flex items-center gap-2">
                   <span>🏠</span> Asrama
                 </div>
-                <div className="text-3xl font-black text-white">
+                <div className="text-3xl font-black text-violet-900">
                   {filteredStudents.filter(s => s.data.asrama === 'ASRAMA').length}
                 </div>
-                <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
-                  <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.data.asrama === 'ASRAMA').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
+                <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-purple-500 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.data.asrama === 'ASRAMA').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-5 rounded-2xl shadow-lg hover-lift transform transition-all">
-                <div className="text-white/90 text-sm font-semibold mb-1 flex items-center gap-2">
+              <div className="bg-gradient-to-br from-white to-orange-50/70 border border-slate-200 border-l-4 border-l-orange-500 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                <div className="text-orange-700 text-sm font-semibold mb-2 flex items-center gap-2">
                   <span>🏡</span> Non Asrama
                 </div>
-                <div className="text-3xl font-black text-white">
+                <div className="text-3xl font-black text-orange-900">
                   {filteredStudents.filter(s => s.data.asrama === 'NON ASRAMA').length}
                 </div>
-                <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
-                  <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.data.asrama === 'NON ASRAMA').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
+                <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-orange-500 rounded-full transition-all" style={{ width: `${(filteredStudents.filter(s => s.data.asrama === 'NON ASRAMA').length / Math.max(filteredStudents.length, 1)) * 100}%` }}></div>
                 </div>
               </div>
             </div>
@@ -390,35 +386,72 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             if (pengujiList.length === 0) return null;
 
             const colors = [
-              'from-indigo-500 to-blue-600',
-              'from-teal-500 to-cyan-600',
-              'from-fuchsia-500 to-pink-600',
-              'from-lime-500 to-green-600',
-              'from-rose-500 to-red-600',
-              'from-sky-500 to-blue-600',
+              'bg-indigo-500',
+              'bg-teal-500',
+              'bg-fuchsia-500',
+              'bg-lime-500',
+              'bg-rose-500',
+              'bg-sky-500',
+            ];
+            const borderColors = [
+              'border-l-indigo-500',
+              'border-l-teal-500',
+              'border-l-fuchsia-500',
+              'border-l-lime-500',
+              'border-l-rose-500',
+              'border-l-sky-500',
+            ];
+            const labelTextColors = [
+              'text-indigo-700',
+              'text-teal-700',
+              'text-fuchsia-700',
+              'text-lime-700',
+              'text-rose-700',
+              'text-sky-700',
+            ];
+            const valueTextColors = [
+              'text-indigo-900',
+              'text-teal-900',
+              'text-fuchsia-900',
+              'text-lime-900',
+              'text-rose-900',
+              'text-sky-900',
+            ];
+            const metaTextColors = [
+              'text-indigo-600',
+              'text-teal-600',
+              'text-fuchsia-600',
+              'text-lime-600',
+              'text-rose-600',
+              'text-sky-600',
             ];
 
             return (
-              <div className="mb-6">
-                <h3 className="text-lg font-bold text-blue-900 mb-3 drop-shadow-lg flex items-center gap-2">
-                  👤 Statistik Per Penguji
+              <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5">
+                <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                  <span className="text-indigo-500">👤</span> Statistik Per Penguji
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {pengujiList.map(([penguji, count], index) => (
-                    <div key={penguji} className={`bg-gradient-to-br ${colors[index % colors.length]} p-5 rounded-2xl shadow-lg hover-lift transform transition-all`}>
-                      <div className="text-white/90 text-sm font-semibold mb-1 flex items-center gap-2">
+                    (() => {
+                      const cIdx = index % colors.length;
+                      return (
+                    <div key={penguji} className={`bg-gradient-to-br from-white to-slate-50/70 border border-slate-200 border-l-4 ${borderColors[index % borderColors.length]} p-5 rounded-2xl shadow-sm hover:shadow-md transition-all`}>
+                      <div className={`${labelTextColors[cIdx]} text-sm font-semibold mb-2 flex items-center gap-2`}>
                         <span>👤</span> {penguji}
                       </div>
-                      <div className="text-3xl font-black text-white">
+                      <div className={`text-3xl font-black ${valueTextColors[cIdx]}`}>
                         {count}
                       </div>
-                      <div className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden">
-                        <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${(count / Math.max(filteredStudents.filter(s => s.status === 'SUDAH DIUJI').length, 1)) * 100}%` }}></div>
+                      <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className={`h-full ${colors[index % colors.length]} rounded-full transition-all`} style={{ width: `${(count / Math.max(filteredStudents.filter(s => s.status === 'SUDAH DIUJI').length, 1)) * 100}%` }}></div>
                       </div>
-                      <div className="text-white/70 text-xs mt-1">
+                      <div className={`${metaTextColors[cIdx]} text-xs mt-2 font-medium`}>
                         {((count / Math.max(filteredStudents.filter(s => s.status === 'SUDAH DIUJI').length, 1)) * 100).toFixed(1)}% dari total
                       </div>
                     </div>
+                      );
+                    })()
                   ))}
                 </div>
               </div>
@@ -430,21 +463,23 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
         {userRole === 'TU' && (
           <div className="mb-6 animate-fade-in">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-white drop-shadow-lg">Tambah Calon Siswa Baru</h2>
+              <h2 className="text-xl font-bold text-slate-800">Tambah Calon Siswa Baru</h2>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {lembagaData.map((lembaga) => {
                 const Icon = lembaga.icon;
                 return (
-                  <div key={lembaga.id} className="glass rounded-2xl p-5 hover:shadow-2xl transition-all">
-                    <div className={`inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br ${lembaga.color} rounded-xl mb-3 shadow-lg`}>
-                      <Icon className="w-6 h-6 text-white" />
+                  <div key={lembaga.id} className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 hover:shadow-md transition-all">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className={`inline-flex items-center justify-center w-10 h-10 bg-gradient-to-br ${lembaga.color} rounded-lg shadow-sm`}>
+                        <Icon className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="text-sm font-bold text-slate-800">{lembaga.name}</div>
                     </div>
-                    <div className="text-sm font-bold text-gray-800 mb-3">{lembaga.name}</div>
                     <div className="flex gap-2">
                       <button
                         onClick={() => onAddStudent(lembaga)}
-                        className="flex-1 px-3 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-xl text-xs font-bold transition-all transform hover:scale-105"
+                        className="flex-1 px-3 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 rounded-xl text-xs font-bold transition-all"
                       >
                         ➕ Manual
                       </button>
@@ -453,7 +488,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                           setImportLembaga(lembaga);
                           setShowImportModal(true);
                         }}
-                        className="flex-1 px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white rounded-xl text-xs font-bold transition-all transform hover:scale-105 flex items-center justify-center gap-1"
+                        className="flex-1 px-3 py-2 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1"
                       >
                         <Upload className="w-3 h-3" />
                         Excel
@@ -483,17 +518,17 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
         )}
 
         {/* Filters */}
-        <div className="glass rounded-2xl shadow-xl p-4 mb-6 animate-fade-in">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 md:p-6 mb-6 animate-fade-in">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <div className="relative group">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-500 w-5 h-5 transition-colors" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 w-5 h-5 transition-colors" />
                 <input
                   type="text"
                   placeholder="Cari nama siswa, orang tua, atau no. tes..."
                   value={searchQuery}
                   onChange={(e) => onSearchQueryChange(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-400 transition-all bg-white/50 backdrop-blur-sm font-medium"
+                  className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 transition-all bg-white font-medium text-slate-800"
                 />
               </div>
             </div>
@@ -502,7 +537,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 value={filterLembaga}
                 onChange={(e) => onFilterLembagaChange(e.target.value)}
                 aria-label="Filter Lembaga"
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-400 transition-all bg-white/50 backdrop-blur-sm font-semibold"
+                className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 transition-all bg-white font-semibold text-slate-800"
               >
                 <option value="ALL">🏫 Semua Lembaga</option>
                 {lembagaData.map(l => (
@@ -515,7 +550,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 value={filterStatus}
                 onChange={(e) => onFilterStatusChange(e.target.value)}
                 aria-label="Filter Status"
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-400 transition-all bg-white/50 backdrop-blur-sm font-semibold"
+                className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 transition-all bg-white font-semibold text-slate-800"
               >
                 <option value="ALL">📊 Semua Status</option>
                 <option value="BELUM DIUJI">🔴 Belum Diuji</option>
@@ -528,23 +563,23 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </div>
 
           {/* Date Filter Row */}
-          <div className="flex flex-col md:flex-row gap-4 mt-4 pt-4 border-t-2 border-gray-200">
+          <div className="flex flex-col md:flex-row gap-4 mt-4 pt-4 border-t border-slate-200">
             <div className="flex-1">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">📅 Filter Tanggal Upload (Dari)</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">📅 Filter Tanggal Upload (Dari)</label>
               <input
                 type="date"
                 value={filterDateFrom || ''}
                 onChange={(e) => onFilterDateFromChange?.(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-400 transition-all bg-white/50 backdrop-blur-sm font-medium"
+                className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 transition-all bg-white font-medium text-slate-800"
               />
             </div>
             <div className="flex-1">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">📅 Filter Tanggal Upload (Sampai)</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">📅 Filter Tanggal Upload (Sampai)</label>
               <input
                 type="date"
                 value={filterDateTo || ''}
                 onChange={(e) => onFilterDateToChange?.(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-400 transition-all bg-white/50 backdrop-blur-sm font-medium"
+                className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 transition-all bg-white font-medium text-slate-800"
               />
             </div>
             <div className="flex items-end">
@@ -553,7 +588,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   onFilterDateFromChange?.('');
                   onFilterDateToChange?.('');
                 }}
-                className="px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl hover:shadow-xl transition-all transform hover:scale-105 font-semibold whitespace-nowrap"
+                className="px-6 py-3 bg-slate-100 text-slate-700 border border-slate-300 rounded-xl hover:bg-slate-200 transition-all font-semibold whitespace-nowrap"
               >
                 🔄 Reset Tanggal
               </button>
@@ -562,8 +597,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
         </div>
 
         {/* Students List & Bulk Export */}
-        <div className="glass rounded-2xl shadow-xl p-4 md:p-6 animate-fade-in">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-emerald-700 to-teal-700 bg-clip-text text-transparent mb-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 md:p-6 animate-fade-in">
+          <h2 className="text-2xl font-bold text-slate-800 mb-6">
             {userRole === 'PENGUJI' ? '📅 Jadwal Tes Hari Ini' : '📋 Daftar Calon Siswa'}
           </h2>
           {/* Bulk export buttons (visible when data tersedia) */}
@@ -588,32 +623,32 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 const Icon = lembaga?.icon || School;
 
                 return (
-                  <div key={student.id} className="bg-white/60 backdrop-blur-sm border-2 border-white rounded-2xl p-5 hover:shadow-xl transition-all transform hover:scale-[1.01] group animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+                  <div key={student.id} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:bg-slate-50/30 transition-all group animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
                     <div className="flex items-start gap-4">
-                      <div className={`hidden md:flex items-center justify-center w-14 h-14 bg-gradient-to-br ${lembaga?.color} rounded-xl flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform`}>
+                      <div className={`hidden md:flex items-center justify-center w-14 h-14 bg-gradient-to-br ${lembaga?.color} rounded-xl flex-shrink-0 shadow-sm ring-1 ring-slate-200/70 group-hover:scale-110 transition-transform`}>
                         <Icon className="w-7 h-7 text-white" />
                       </div>
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2 mb-3">
                           <div>
-                            <h3 className="font-black text-gray-800 text-xl mb-1">{student.data.namaSiswa}</h3>
-                            <p className="text-sm text-gray-600 font-medium">👨‍👩‍👦 {student.data.namaOrangTua}</p>
+                            <h3 className="font-black text-slate-800 text-xl mb-1">{student.data.namaSiswa}</h3>
+                            <p className="text-sm text-slate-500 font-medium">👨‍👩‍👦 {student.data.namaOrangTua}</p>
                           </div>
                           <div className="flex flex-col gap-2 items-end">
-                            <span className={`px-4 py-2 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 ${student.status === 'SUDAH DIUJI'
-                              ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white'
-                              : 'bg-gradient-to-r from-orange-500 to-amber-500 text-white'
+                            <span className={`px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm flex items-center gap-1.5 ${student.status === 'SUDAH DIUJI'
+                              ? 'bg-emerald-600 text-white'
+                              : 'bg-amber-600 text-white'
                               }`}>
                               {student.status === 'SUDAH DIUJI' ? '✓' : '○'}
                               {student.status}
                             </span>
                             {student.status === 'SUDAH DIUJI' && student.kelulusan && (
-                              <span className={`px-4 py-2 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 ${student.kelulusan === 'LULUS'
-                                ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white'
+                              <span className={`px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm flex items-center gap-1.5 ${student.kelulusan === 'LULUS'
+                                ? 'bg-emerald-600 text-white'
                                 : student.kelulusan === 'CADANGAN'
-                                  ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white'
-                                  : 'bg-gradient-to-r from-red-500 to-pink-500 text-white'
+                                  ? 'bg-amber-600 text-white'
+                                  : 'bg-rose-600 text-white'
                                 }`}>
                                 {student.kelulusan === 'LULUS' ? '✓' : student.kelulusan === 'CADANGAN' ? '⚠' : '✗'}
                                 {student.kelulusan}
@@ -622,72 +657,76 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm text-gray-600 mb-3">
-                          <div className="flex items-center gap-2">
-                            <FileText className="w-4 h-4 text-emerald-600" />
-                            <span className="font-medium">{student.noTes}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <School className="w-4 h-4 text-emerald-600" />
-                            <span>{lembaga?.name}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Calendar className="w-4 h-4 text-emerald-600" />
-                            <span>{formatTanggalSingkat(student.data.tanggalTes)} - {student.data.jamTes}</span>
-                          </div>
-                        </div>
-
-                        {/* Petugas TU, Status Asrama, dan Status Alumni */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm text-gray-600 mb-3">
+                        <div className="flex flex-wrap gap-2 text-xs mb-4">
+                          <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-600 rounded-lg text-white shadow-sm">
+                            <FileText className="w-4 h-4 text-white/90" />
+                            <span className="font-semibold">{student.noTes}</span>
+                          </span>
+                          <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 rounded-lg text-white shadow-sm">
+                            <School className="w-4 h-4 text-white/90" />
+                            <span className="font-semibold">{lembaga?.name}</span>
+                          </span>
+                          <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-600 rounded-lg text-white shadow-sm">
+                            <Calendar className="w-4 h-4 text-white/90" />
+                            <span className="font-semibold">{formatTanggalSingkat(student.data.tanggalTes)} • {student.data.jamTes}</span>
+                          </span>
                           {student.data.petugas && (
-                            <div className="flex items-center gap-2">
-                              <UserIcon className="w-4 h-4 text-emerald-600" />
-                              <span>Petugas: {student.data.petugas}</span>
-                            </div>
+                            <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-600 rounded-lg text-white shadow-sm">
+                              <UserIcon className="w-4 h-4 text-white/90" />
+                              <span>Petugas: <span className="font-semibold">{student.data.petugas}</span></span>
+                            </span>
                           )}
                           {student.data.asrama && (
-                            <div className="flex items-center gap-2">
-                              <UserCheck className="w-4 h-4 text-blue-600" />
-                              <span>Asrama: {student.data.asrama}</span>
-                            </div>
+                            <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-violet-600 rounded-lg text-white shadow-sm">
+                              <UserCheck className="w-4 h-4 text-white/90" />
+                              <span>Asrama: <span className="font-semibold">{student.data.asrama}</span></span>
+                            </span>
                           )}
-                          <div className="flex items-center gap-2">
-                            <UserCheck className="w-4 h-4 text-purple-600" />
-                            <span>Alumni: {student.data.alumni === 'YA' ? 'Ya' : 'Tidak'}</span>
-                          </div>
+                          <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-rose-600 rounded-lg text-white shadow-sm">
+                            <UserCheck className="w-4 h-4 text-white/90" />
+                            <span>Alumni: <span className="font-semibold">{student.data.alumni === 'YA' ? 'Ya' : 'Tidak'}</span></span>
+                          </span>
                         </div>
 
                         {/* Informasi Penguji dan Nilai */}
                         {student.status === 'SUDAH DIUJI' && (
-                          <div className="mb-3 space-y-2">
-                            {student.penguji && (
-                              <div className="flex items-center gap-2 text-sm text-gray-600">
-                                <UserCheck className="w-4 h-4 text-blue-600" />
-                                <span className="font-medium">Diuji oleh: <span className="text-blue-600 font-bold">{student.penguji}</span></span>
-                              </div>
-                            )}
-                            {student.nilaiAkhir !== undefined && (
-                              <div className="flex items-center gap-2 text-sm text-gray-600">
-                                <FileText className="w-4 h-4 text-purple-600" />
-                                <span className="font-medium">Nilai Akhir: <span className="text-purple-600 font-bold">{student.nilaiAkhir}</span></span>
-                              </div>
-                            )}
+                          <div className="mb-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              {student.penguji && (
+                                <div className="flex items-center gap-2 text-sm">
+                                  <div className="flex items-center gap-2 text-slate-600">
+                                    <UserCheck className="w-4 h-4 text-indigo-500" />
+                                    <span>Diuji oleh:</span>
+                                  </div>
+                                  <span className="font-bold text-indigo-700">{student.penguji}</span>
+                                </div>
+                              )}
+                              {student.nilaiAkhir !== undefined && (
+                                <div className="flex items-center gap-2 text-sm">
+                                  <div className="flex items-center gap-2 text-slate-600">
+                                    <FileText className="w-4 h-4 text-purple-500" />
+                                    <span>Nilai Akhir:</span>
+                                  </div>
+                                  <span className="font-black text-purple-700">{student.nilaiAkhir}</span>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         )}
 
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-slate-100 justify-start md:justify-end">
                           {userRole === 'TU' && (
                             <>
                               <button
                                 onClick={() => onEditStudent(student)}
-                                className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all transform hover:scale-105 text-sm font-semibold"
+                                className="flex items-center gap-1.5 px-3 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 rounded-xl transition-all text-sm font-semibold"
                               >
                                 <Edit className="w-4 h-4" />
                                 Edit
                               </button>
                               <button
                                 onClick={() => onDeleteStudent(student.id)}
-                                className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all transform hover:scale-105 text-sm font-semibold"
+                                className="flex items-center gap-1.5 px-3 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 rounded-xl transition-all text-sm font-semibold"
                               >
                                 <Trash2 className="w-4 h-4" />
                                 Hapus
@@ -697,7 +736,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                           {userRole === 'PENGUJI' && (
                             <button
                               onClick={() => onStartPenilaian(student)}
-                              className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-lg hover:shadow-lg transition-all transform hover:scale-105 text-sm font-bold"
+                              className="flex items-center gap-1.5 px-4 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded-xl transition-all text-sm font-bold"
                             >
                               {student.status === 'SUDAH DIUJI' ? (
                                 <>
@@ -717,7 +756,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                             <>
                               <button
                                 onClick={async () => { await exportStudentToPDF(student, lembagaData); }}
-                                className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all transform hover:scale-105 text-sm font-semibold"
+                                className="flex items-center gap-1.5 px-3 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-xl transition-all text-sm font-semibold"
                                 aria-label="Download Hasil Tes PDF"
                                 title="Export Hasil Tes PDF"
                               >
@@ -727,7 +766,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                               {student.kelulusan && (userRole === 'TU' || userRole === 'ADMIN') && (
                                 <button
                                   onClick={() => downloadSuratKeterangan(student)}
-                                  className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-lg hover:shadow-lg transition-all transform hover:scale-105 text-sm font-semibold"
+                                  className="flex items-center gap-1.5 px-3 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded-xl transition-all text-sm font-semibold"
                                   aria-label="Download Surat Keterangan"
                                   title="Download Surat Keterangan Lulus/Tidak Lulus"
                                 >
@@ -739,15 +778,15 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                           )}
                           <button
                             onClick={() => downloadKartuPeserta(student)}
-                            className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg hover:shadow-lg transition-all transform hover:scale-105 text-sm font-semibold"
+                            className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 rounded-xl transition-all text-sm font-semibold"
                             aria-label="Download Kartu Peserta PDF"
                           >
                             <FileText className="w-4 h-4" />
-                            PDF
+                            Kartu
                           </button>
                           <button
                             onClick={() => sendViaWhatsApp(student)}
-                            className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:shadow-lg transition-all transform hover:scale-105 text-sm font-semibold"
+                            className="flex items-center gap-1.5 px-3 py-2 bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 rounded-xl transition-all text-sm font-semibold"
                             aria-label="Kirim WhatsApp ke Orang Tua"
                           >
                             <MessageCircle className="w-4 h-4" />
@@ -768,4 +807,3 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 };
 
 export default DashboardScreen;
-
